@@ -45,19 +45,8 @@ public/app.*
 bundle.js
 /.vscode
 
-# Upload folder
-public/uploads/*
-.env
 
-package.json
-/package.json
-/src/envenc.json
-src\envenc.json
-package.json
 
-#mazhar's config
-.mz
-/src/src/components/CustomComponentDeveloper1.jsx
 
 #yarn
 .mz
