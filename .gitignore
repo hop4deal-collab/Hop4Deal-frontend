@@ -45,6 +45,8 @@ public/app.*
 bundle.js
 /.vscode
 
+.env
+
 
 
 
