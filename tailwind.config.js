@@ -34,8 +34,39 @@ module.exports = {
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],
       },
+      backgroundSize: {
+        '200': '200% 200%',
+      },
+      animation: {
+        'gradient-x': 'gradient-x 6s ease infinite',
+        'gradient-y': 'gradient-y 6s ease infinite',
+        'gradient-xy': 'gradient-xy 8s ease infinite',
+        'fade-in': 'fade-in 0.8s ease-out forwards',
+        'slide-in-up': 'slide-in-up 0.6s ease-out forwards',
+      },
+      keyframes: {
+        'gradient-x': {
+          '0%, 100%': { 'background-position': '0% 50%' },
+          '50%': { 'background-position': '100% 50%' },
+        },
+        'gradient-y': {
+          '0%, 100%': { 'background-position': '50% 0%' },
+          '50%': { 'background-position': '50% 100%' },
+        },
+        'gradient-xy': {
+          '0%, 100%': { 'background-position': '0% 0%' },
+          '50%': { 'background-position': '100% 100%' },
+        },
+        'fade-in': {
+          '0%': { opacity: 0 },
+          '100%': { opacity: 1 },
+        },
+        'slide-in-up': {
+          '0%': { opacity: 0, transform: 'translateY(20px)' },
+          '100%': { opacity: 1, transform: 'translateY(0)' },
+        }
+      }
     },
   },
   plugins: [],
 }
-
