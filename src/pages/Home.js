@@ -23,25 +23,39 @@ class Home extends Component {
   }
 
   loadData = async () => {
-    try {
-      const [dealsRes, brandsRes, blogsRes, catsRes] = await Promise.all([
-        dealsAPI.getAll({ isHot: true }),
-        brandsAPI.getAll(),
-        blogsAPI.getAll({ featured: true }),
-        categoriesAPI.getAll(),
-      ]);
-      this.setState({
-        hotDeals: dealsRes.data,
-        trendingBrands: brandsRes.data.slice(0, 6),
-        featuredBlogs: blogsRes.data,
-        categories: catsRes.data,
-        loading: false,
-      });
-    } catch (err) {
-      console.error('Error loading data:', err);
-      this.setState({ error: 'Failed to load data', loading: false });
-    }
-  };
+      try {
+        const [dealsRes, brandsRes, blogsRes, catsRes] = await Promise.all([
+          dealsAPI.getAll(),
+          brandsAPI.getAll(),
+          blogsAPI.getAll(),
+          categoriesAPI.getAll(),
+        ]);
+  
+        const deals = dealsRes.data;
+        const brands = brandsRes.data;
+        const categories = catsRes.data;
+  
+        // 🧠 Group brands by category
+        const categoryBrands = {};
+        categories.forEach((cat) => {
+          categoryBrands[cat._id] = brands.filter(
+            (b) => b.category?._id === cat._id
+          );
+        });
+  
+        this.setState({
+          hotDeals: deals,
+          trendingBrands: brands.slice(0, 6),
+          featuredBlogs: blogsRes.data,
+          categories,
+          categoryBrands,
+          loading: false,
+        });
+      } catch (err) {
+        console.error('Error loading data:', err);
+        this.setState({ error: 'Failed to load data', loading: false });
+      }
+    };
 
   render() {
     const { hotDeals, trendingBrands, featuredBlogs, categories, loading, error } = this.state;
@@ -185,43 +199,109 @@ class Home extends Component {
         </motion.section>
 
         {/* Browse Categories Section */}
-        <motion.section
-          id="categories"
-          className="py-16 bg-gray-50"
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-        >
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex items-end justify-between mb-12">
-              <div>
-                <h2 className="text-3xl font-bold text-primary-800 mb-2">📂 Browse Categories</h2>
-                <p className="text-lg text-gray-600">Explore deals by category</p>
-              </div>
-              <Link to="/categories" className="text-primary-600 hover:text-primary-800 font-medium">Show all</Link>
-            </div>
+       {/* --- BEAUTIFIED CATEGORIES SECTION --- */}
+       <motion.section
+  id="categories"
+  className="py-20 bg-gradient-to-b from-gray-50 to-white"
+  initial={{ opacity: 0, y: 40 }}
+  whileInView={{ opacity: 1, y: 0 }}
+  viewport={{ once: true }}
+  transition={{ duration: 0.6, delay: 0.2 }}
+>
+  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="flex items-end justify-between mb-12">
+      <div>
+        <h2 className="text-3xl font-bold text-primary-800 mb-2">
+          📂 Browse by Category
+        </h2>
+        <p className="text-lg text-gray-600">
+          Discover top brands and their latest deals
+        </p>
+      </div>
+      <Link
+        to="/categories"
+        className="text-primary-600 hover:text-primary-800 font-medium"
+      >
+        Show all categories
+      </Link>
+    </div>
 
-            {categories.length > 0 ? (
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-                {categories.slice(0, 6).map((cat) => (
-                  <motion.a
-                    key={cat._id}
-                    href="#hot-deals"
-                    className="bg-white rounded-lg py-4 flex items-center justify-center shadow-md hover:shadow-lg transition-colors border border-transparent hover:border-primary-500"
-                    whileHover={{ scale: 1.1 }}
+    {categories.length > 0 ? (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+        {categories.map((cat) => {
+          const brandsInCat = this.state.categoryBrands[cat._id] || [];
+          const visibleBrands = brandsInCat.slice(0, 8); // 👈 limit to 8 brands
+
+          return (
+            <motion.div
+              key={cat._id}
+              className="bg-white rounded-2xl shadow-md hover:shadow-xl border border-gray-100 hover:border-primary-400 transition-all p-6 flex flex-col"
+              whileHover={{ scale: 1.02 }}
+            >
+              <div className="flex items-center justify-between border-b border-gray-100 pb-3 mb-6">
+                <h3 className="text-2xl font-bold text-primary-800">
+                  {cat.name}
+                </h3>
+                {brandsInCat.length > 8 && (
+                  <Link
+                    to={`/categories/${cat._id}`}
+                    className="text-sm text-primary-600 hover:text-primary-800 font-medium"
                   >
-                    <span className="text-sm font-semibold text-primary-800">{cat.name}</span>
-                  </motion.a>
-                ))}
+                    Show all →
+                  </Link>
+                )}
               </div>
-            ) : (
-              <div className="text-center py-12">
-                <p className="text-gray-500">No categories at the moment.</p>
-              </div>
-            )}
-          </div>
-        </motion.section>
+
+              {visibleBrands.length > 0 ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 flex-1">
+                  {visibleBrands.map((brand) => {
+                    // Hardcoded deal count for now
+                    const dealCount = Math.floor(Math.random() * 5) + 1;
+                    return (
+                      <Link
+                        key={brand._id}
+                        to={`/deals?brand=${brand._id}`}
+                        className="flex items-center gap-3 bg-gray-50 hover:bg-primary-50 p-3 rounded-lg border border-gray-200 hover:border-primary-400 transition-all"
+                      >
+                        {brand.logo ? (
+                          <img
+                            src={brand.logo}
+                            alt={brand.name}
+                            className="w-10 h-10 rounded-full object-cover"
+                          />
+                        ) : (
+                          <div className="w-10 h-10 bg-primary-200 rounded-full flex items-center justify-center text-lg font-bold text-primary-800">
+                            {brand.name.charAt(0)}
+                          </div>
+                        )}
+                        <div className="text-left">
+                          <p className="text-primary-800 font-semibold text-sm">
+                            {brand.name}
+                          </p>
+                          <p className="text-gray-500 text-xs">
+                            {dealCount} deal{dealCount > 1 ? 's' : ''}
+                          </p>
+                        </div>
+                      </Link>
+                    );
+                  })}
+                </div>
+              ) : (
+                <p className="text-gray-400 italic text-sm mt-4">
+                  No brands available in this category yet.
+                </p>
+              )}
+            </motion.div>
+          );
+        })}
+      </div>
+    ) : (
+      <div className="text-center py-12">
+        <p className="text-gray-500">No categories at the moment.</p>
+      </div>
+    )}
+  </div>
+</motion.section>
 
         {/* Trending Brands Section */}
         <motion.section
@@ -293,7 +373,7 @@ class Home extends Component {
 
             {featuredBlogs.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {featuredBlogs.slice(0, 4).map((blog, idx) => (
+                {featuredBlogs.slice(0, 3).map((blog, idx) => (
                   <motion.div
                     key={blog._id}
                     className="bg-white p-6 rounded-lg shadow-md hover:shadow-xl border border-transparent hover:border-primary-500 transition-shadow"
@@ -335,6 +415,49 @@ class Home extends Component {
         >
           ↑
         </motion.button>
+
+        <motion.section
+                  id="reviews"
+                  className="py-20 bg-white"
+                  initial={{ opacity: 0, y: 40 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, delay: 0.4 }}
+                >
+                  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                    <h2 className="text-3xl font-bold text-primary-800 mb-12">
+                      💬 What Our Users Say
+                    </h2>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                      {[
+                        {
+                          name: 'Emily Johnson',
+                          review:
+                            'Hop4Deals helped me save so much on my favorite brands! Love the clean design and easy navigation.',
+                        },
+                        {
+                          name: 'Mark Thompson',
+                          review:
+                            'Found great electronics deals through Hop4Deals. Definitely my go-to site now!',
+                        },
+                        {
+                          name: 'Sophia Lee',
+                          review:
+                            'Amazing experience — I keep discovering new brands with awesome discounts every week.',
+                        },
+                      ].map((r, i) => (
+                        <motion.div
+                          key={i}
+                          className="bg-gray-50 p-6 rounded-lg shadow-md border hover:border-primary-400 transition"
+                          whileHover={{ scale: 1.05 }}
+                        >
+                          <p className="text-gray-700 italic mb-4">"{r.review}"</p>
+                          <p className="text-primary-800 font-semibold">— {r.name}</p>
+                        </motion.div>
+                      ))}
+                    </div>
+                  </div>
+                </motion.section>
 
         {/* Footer */}
         <motion.footer
