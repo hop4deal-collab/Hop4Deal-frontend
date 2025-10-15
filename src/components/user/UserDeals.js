@@ -81,6 +81,8 @@ class UserDeals extends Component {
           startDate: '',
           endDate: '',
           code: '',
+             type: 'deal',
+          link : '',
           description: '',
           percentOff: '',
           isHot: false,
@@ -219,7 +221,7 @@ class UserDeals extends Component {
                 <h3 className="text-lg font-medium text-gray-900 mb-4">
                   {editingDeal ? 'Edit Deal' : 'Add New Deal'}
                 </h3>
-                <form onSubmit={this.handleSubmit} className="space-y-4">
+               <form onSubmit={this.handleSubmit} className="space-y-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700">
                       Brand
@@ -239,7 +241,47 @@ class UserDeals extends Component {
                       ))}
                     </select>
                   </div>
+                  <div>
+    <label className="block text-sm font-medium text-gray-700">Redirect Link</label>
+    <input
+      type="url"
+      name="link"
+      value={formData.link}
+      onChange={this.handleInputChange}
+      placeholder="https://example.com"
+      required
+      className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+    />
+  </div>
 
+                   <div>
+    <label className="block text-sm font-medium text-gray-700">Type</label>
+    <div className="flex space-x-4 mt-1">
+      <label className="flex items-center space-x-2">
+        <input
+          type="radio"
+          name="type"
+          value="deal"
+          checked={formData.type === "deal" || !formData.type}
+          onChange={this.handleInputChange}
+          className="text-primary-500 focus:ring-primary-500"
+        />
+        <span>Deal</span>
+      </label>
+      <label className="flex items-center space-x-2">
+        <input
+          type="radio"
+          name="type"
+          value="offer"
+          checked={formData.type === "offer"}
+          onChange={this.handleInputChange}
+          className="text-primary-500 focus:ring-primary-500"
+        />
+        <span>Offer</span>
+      </label>
+    </div>
+  </div>
+{formData.type !== "offer" && <>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700">
@@ -283,19 +325,7 @@ class UserDeals extends Component {
                     />
                   </div>
 
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">
-                      Description
-                    </label>
-                    <textarea
-                      name="description"
-                      value={formData.description}
-                      onChange={this.handleInputChange}
-                      required
-                      rows={3}
-                      className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-primary-500 focus:border-primary-500"
-                    />
-                  </div>
+                 
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700">
@@ -324,6 +354,20 @@ class UserDeals extends Component {
                     <label className="ml-2 text-sm text-gray-700">
                       Mark as Hot Deal
                     </label>
+                  </div>
+</>}
+                   <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Description
+                    </label>
+                    <textarea
+                      name="description"
+                      value={formData.description}
+                      onChange={this.handleInputChange}
+                      required
+                      rows={3}
+                      className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                    />
                   </div>
 
                   <div className="flex justify-end space-x-3 pt-4">

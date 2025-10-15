@@ -163,6 +163,7 @@ class Home extends Component {
                 {hotDeals.slice(0, 4).map((deal, idx) => (
                   <motion.div
                     key={deal._id}
+                     onClick={() => window.open(deal.link, "_blank")}
                     className="bg-white p-6 rounded-lg shadow-md hover:shadow-xl border border-transparent hover:border-primary-400 transition-shadow"
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -241,7 +242,9 @@ class Home extends Component {
               <div className="flex items-center justify-between border-b border-gray-100 pb-3 mb-6">
                 <h3 className="text-2xl font-bold text-primary-800">
                   {cat.name}
+                   <p style={{fontSize:13}}>{cat.description}</p>
                 </h3>
+               
                 {brandsInCat.length > 8 && (
                   <Link
                     to={`/categories/${cat._id}`}

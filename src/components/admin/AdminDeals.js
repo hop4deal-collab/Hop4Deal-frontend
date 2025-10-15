@@ -79,6 +79,8 @@ class AdminDeals extends Component {
         formData: {
           brand: '',
           startDate: '',
+          type: 'deal',
+          link : '',
           endDate: '',
           code: '',
           description: '',
@@ -259,7 +261,47 @@ class AdminDeals extends Component {
                       ))}
                     </select>
                   </div>
+                  <div>
+    <label className="block text-sm font-medium text-gray-700">Redirect Link</label>
+    <input
+      type="url"
+      name="link"
+      value={formData.link}
+      onChange={this.handleInputChange}
+      placeholder="https://example.com"
+      required
+      className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+    />
+  </div>
 
+                   <div>
+    <label className="block text-sm font-medium text-gray-700">Type</label>
+    <div className="flex space-x-4 mt-1">
+      <label className="flex items-center space-x-2">
+        <input
+          type="radio"
+          name="type"
+          value="deal"
+          checked={formData.type === "deal" || !formData.type}
+          onChange={this.handleInputChange}
+          className="text-primary-500 focus:ring-primary-500"
+        />
+        <span>Deal</span>
+      </label>
+      <label className="flex items-center space-x-2">
+        <input
+          type="radio"
+          name="type"
+          value="offer"
+          checked={formData.type === "offer"}
+          onChange={this.handleInputChange}
+          className="text-primary-500 focus:ring-primary-500"
+        />
+        <span>Offer</span>
+      </label>
+    </div>
+  </div>
+{formData.type !== "offer" && <>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700">
@@ -303,19 +345,7 @@ class AdminDeals extends Component {
                     />
                   </div>
 
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">
-                      Description
-                    </label>
-                    <textarea
-                      name="description"
-                      value={formData.description}
-                      onChange={this.handleInputChange}
-                      required
-                      rows={3}
-                      className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-primary-500 focus:border-primary-500"
-                    />
-                  </div>
+                 
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700">
@@ -344,6 +374,20 @@ class AdminDeals extends Component {
                     <label className="ml-2 text-sm text-gray-700">
                       Mark as Hot Deal
                     </label>
+                  </div>
+</>}
+                   <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Description
+                    </label>
+                    <textarea
+                      name="description"
+                      value={formData.description}
+                      onChange={this.handleInputChange}
+                      required
+                      rows={3}
+                      className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                    />
                   </div>
 
                   <div className="flex justify-end space-x-3 pt-4">

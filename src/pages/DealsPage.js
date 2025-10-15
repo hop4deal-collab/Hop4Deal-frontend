@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { dealsAPI, brandsAPI, categoriesAPI } from '../services/api';
 import { createSearchParams } from 'react-router-dom';
-
+import { motion } from 'framer-motion';
 class DealsPage extends Component {
   constructor(props) {
     super(props);
@@ -130,20 +130,35 @@ class DealsPage extends Component {
 
           {/* Deals grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {deals.map((deal) => (
-              <div key={deal._id} className="card card-hover">
-                <div className="flex items-center justify-between mb-4">
-                  <span className="bg-red-100 text-red-800 text-sm font-medium px-2.5 py-0.5 rounded">{deal.percentOff}% OFF</span>
-                  <span className="text-sm text-gray-500">{new Date(deal.endDate).toLocaleDateString()}</span>
-                </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">{deal.brand?.name}</h3>
-                <p className="text-gray-600 mb-2 text-sm">{deal.brand?.category?.name}</p>
-                <p className="text-gray-600 mb-4">{deal.description}</p>
-                <div className="bg-gray-100 p-3 rounded-lg">
-                  <p className="text-sm text-gray-600 mb-1">Use Code:</p>
-                  <p className="font-mono text-lg font-bold text-primary-600">{deal.code}</p>
-                </div>
-              </div>
+            {deals.map((deal, idx) => (
+              <motion.div
+                    key={deal._id}
+                     onClick={() => window.open(deal.link, "_blank")}
+                    className="bg-white p-6 rounded-lg shadow-md hover:shadow-xl border border-transparent hover:border-primary-400 transition-shadow"
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: idx * 0.2, duration: 0.5 }}
+                    whileHover={{ scale: 1.03 }}
+                  >
+                    <div className="flex items-center justify-between mb-4">
+                      <span className="px-2 py-1 bg-gradient-to-r from-primary-400 to-primary-600 text-white text-sm font-semibold rounded">
+                        {deal.percentOff}% OFF
+                      </span>
+                      <span className="text-sm text-gray-500">
+                        {new Date(deal.endDate).toLocaleDateString()}
+                      </span>
+                    </div>
+                    <h3 className="text-lg font-semibold text-primary-800 mb-2">
+                      {deal.brand?.name}
+                    </h3>
+                    <p className="text-gray-700 mb-4">{deal.description}</p>
+                    <div className="bg-gray-100 p-3 rounded-lg">
+                      <p className="text-sm text-gray-600 mb-1">Use Code:</p>
+                      <p className="font-mono text-lg font-bold text-primary-700">
+                        {deal.code}
+                      </p>
+                    </div>
+                  </motion.div>
             ))}
           </div>
         </div>

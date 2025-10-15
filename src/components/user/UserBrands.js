@@ -56,6 +56,18 @@ class UserBrands extends Component {
     }));
   };
 
+  handleFileChange = (event) => {
+  const file = event.target.files[0];
+  if (file) {
+    this.setState((prevState) => ({
+      formData: {
+        ...prevState.formData,
+        logo: file
+      }
+    }));
+  }
+};
+
   handleSubmit = async (e) => {
     e.preventDefault();
     
@@ -254,7 +266,7 @@ class UserBrands extends Component {
                     />
                   </div>
 
-                  <div>
+                  {/* <div>
                     <label className="block text-sm font-medium text-gray-700">
                       Logo URL
                     </label>
@@ -264,6 +276,18 @@ class UserBrands extends Component {
                       value={formData.logo}
                       onChange={this.handleInputChange}
                       className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                    />
+                  </div> */}
+                   <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Logo Image
+                    </label>
+                    <input
+                      type="file"
+                      name="logoFile"
+                      accept=".png, .jpg, .jpeg, .gif, .webp"
+                      onChange={this.handleFileChange}
+                      className="mt-1 block w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border file:border-gray-300 file:text-sm file:font-semibold file:bg-gray-50 file:text-gray-700 hover:file:bg-gray-100"
                     />
                   </div>
 

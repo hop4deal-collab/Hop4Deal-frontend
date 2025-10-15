@@ -65,8 +65,44 @@ export const categoriesAPI = {
 export const brandsAPI = {
   getAll: () => api.get('/brands'),
   getById: (id) => api.get(`/brands/${id}`),
-  create: (brandData) => api.post('/brands', brandData),
-  update: (id, brandData) => api.put(`/brands/${id}`, brandData),
+  create: (brandData) => {
+    const formData = new FormData();
+
+    for (const key in brandData) {
+      const value = brandData[key];
+
+      // ✅ Append file properly
+      if (key === 'logo' && value instanceof File) {
+        formData.append('logo', value); // field name must match multer config
+      } else {
+        formData.append(key, value);
+      }
+    }
+    api.post('/brands', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  })
+  },
+  update: (id, brandData) => {
+     const formData = new FormData();
+
+    for (const key in brandData) {
+      const value = brandData[key];
+
+      // ✅ Append file properly
+      if (key === 'logo' && value instanceof File) {
+        formData.append('logo', value); // field name must match multer config
+      } else {
+        formData.append(key, value);
+      }
+    }
+    api.put(`/brands/${id}`, formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  })
+  },
   delete: (id) => api.delete(`/brands/${id}`),
 };
 
