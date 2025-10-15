@@ -175,7 +175,7 @@ class UserBrands extends Component {
                 <div className="flex items-center">
                   {brand.logo ? (
                     <img
-                      src={brand.logo}
+                      src={brand.logo ? (brand.logo?.startsWith('/upload') ? `${process.env.REACT_APP_API_URL.slice(0, -4)}${brand.logo}` : null) : null}
                       alt={brand.name}
                       className="w-12 h-12 rounded-full mr-3"
                     />

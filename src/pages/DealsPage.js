@@ -1,7 +1,8 @@
+// src/pages/DealsPage.js
 import React, { Component } from 'react';
 import { dealsAPI, brandsAPI, categoriesAPI } from '../services/api';
-import { createSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
+
 class DealsPage extends Component {
   constructor(props) {
     super(props);
@@ -13,6 +14,7 @@ class DealsPage extends Component {
         brand: '',
         category: '',
         isHot: '',
+        type: '', // NEW: Deal or Offer
       },
       loading: true,
       error: null,
@@ -21,7 +23,6 @@ class DealsPage extends Component {
 
   componentDidMount() {
     this.loadData();
-    // Initialize filters from URL query
     const params = new URLSearchParams(window.location.search);
     const brand = params.get('brand') || '';
     if (brand) {
@@ -59,7 +60,11 @@ class DealsPage extends Component {
       const matchBrand = !filters.brand || d.brand?._id === filters.brand;
       const matchHot = filters.isHot === '' || String(d.isHot) === filters.isHot;
       const matchCategory = !filters.category || d.brand?.category?._id === filters.category;
-      return matchBrand && matchCategory && matchHot;
+      const matchType =
+        !filters.type ||
+        (filters.type === 'deal' && (!d.type || d.type === 'deal')) ||
+        (filters.type === 'offer' && d.type === 'offer');
+      return matchBrand && matchCategory && matchHot && matchType;
     });
   };
 
@@ -69,8 +74,8 @@ class DealsPage extends Component {
 
     if (loading) {
       return (
-        <div className="min-h-screen flex items-center justify-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary-600"></div>
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-500 to-purple-700">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-4 border-white"></div>
         </div>
       );
     }
@@ -87,80 +92,138 @@ class DealsPage extends Component {
     }
 
     return (
-      <div className="min-h-screen bg-gray-50 py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-end justify-between mb-8">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900">All Deals</h1>
-              <p className="text-gray-600">Browse all available deals and offers</p>
-            </div>
+      <div className="min-h-screen bg-gray-50">
+        {/* 🌈 Hero Banner */}
+        <div className="relative bg-gradient-to-r from-primary-500 to-purple-600 text-white py-20 overflow-hidden">
+         
+          <div className="relative z-10 max-w-6xl mx-auto px-6 text-center">
+            <motion.h1
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7 }}
+              className="text-4xl md:text-5xl font-extrabold mb-4"
+            >
+              Discover Amazing Deals & Offers ✨
+            </motion.h1>
+            <motion.p
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2, duration: 0.7 }}
+              className="text-lg opacity-90 max-w-2xl mx-auto"
+            >
+              Save more with the best discounts, exclusive brand offers, and limited-time deals.
+            </motion.p>
           </div>
+        </div>
 
-          {/* Filters */}
-          <div className="card mb-8">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {/* 🧩 Filters Section */}
+        <div className="max-w-6xl mx-auto px-6 -mt-12 relative z-20">
+          <div className="backdrop-blur-lg bg-white/80 border border-white/30 shadow-lg rounded-xl p-6 mb-10">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Brand</label>
-                <select name="brand" value={filters.brand} onChange={this.handleFilterChange} className="w-full border border-gray-300 rounded-md px-3 py-2">
+                <select
+                  name="brand"
+                  value={filters.brand}
+                  onChange={this.handleFilterChange}
+                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-primary-500 focus:border-primary-500"
+                >
                   <option value="">All Brands</option>
                   {brands.map((b) => (
-                    <option key={b._id} value={b._id}>{b.name}</option>
+                    <option key={b._id} value={b._id}>
+                      {b.name}
+                    </option>
                   ))}
                 </select>
               </div>
+
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
-                <select name="category" value={filters.category} onChange={this.handleFilterChange} className="w-full border border-gray-300 rounded-md px-3 py-2">
+                <select
+                  name="category"
+                  value={filters.category}
+                  onChange={this.handleFilterChange}
+                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-primary-500 focus:border-primary-500"
+                >
                   <option value="">All Categories</option>
                   {categories.map((c) => (
-                    <option key={c._id} value={c._id}>{c.name}</option>
+                    <option key={c._id} value={c._id}>
+                      {c.name}
+                    </option>
                   ))}
                 </select>
               </div>
+
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Hot</label>
-                <select name="isHot" value={filters.isHot} onChange={this.handleFilterChange} className="w-full border border-gray-300 rounded-md px-3 py-2">
+                <select
+                  name="isHot"
+                  value={filters.isHot}
+                  onChange={this.handleFilterChange}
+                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-primary-500 focus:border-primary-500"
+                >
                   <option value="">All</option>
                   <option value="true">Hot Only</option>
                   <option value="false">Not Hot</option>
                 </select>
               </div>
+
+              {/* 🆕 Type Filter */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Type</label>
+                <select
+                  name="type"
+                  value={filters.type}
+                  onChange={this.handleFilterChange}
+                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-primary-500 focus:border-primary-500"
+                >
+                  <option value="">All</option>
+                  <option value="deal">Deal</option>
+                  <option value="offer">Offer</option>
+                </select>
+              </div>
             </div>
           </div>
+        </div>
 
-          {/* Deals grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {deals.map((deal, idx) => (
-              <motion.div
-                    key={deal._id}
-                     onClick={() => window.open(deal.link, "_blank")}
-                    className="bg-white p-6 rounded-lg shadow-md hover:shadow-xl border border-transparent hover:border-primary-400 transition-shadow"
-                    initial={{ opacity: 0, y: 30 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: idx * 0.2, duration: 0.5 }}
-                    whileHover={{ scale: 1.03 }}
-                  >
+        {/* 💎 Deals Grid */}
+        <div className="max-w-6xl mx-auto px-6 pb-20">
+          {deals.length === 0 ? (
+            <div className="text-center text-gray-500 py-20">
+              <p className="text-lg">No deals found. Try adjusting your filters.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+              {deals.map((deal, idx) => (
+                <motion.div
+                  key={deal._id}
+                  onClick={() => window.open(deal.link, '_blank')}
+                  className="cursor-pointer bg-white/90 backdrop-blur-md rounded-xl shadow-lg hover:shadow-2xl border border-transparent hover:border-primary-400 transition-all duration-300"
+                  initial={{ opacity: 0, y: 40 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: idx * 0.15, duration: 0.6 }}
+                  whileHover={{ scale: 1.03 }}
+                >
+                  <div className="p-6">
                     <div className="flex items-center justify-between mb-4">
-                      <span className="px-2 py-1 bg-gradient-to-r from-primary-400 to-primary-600 text-white text-sm font-semibold rounded">
+                      <span className="px-3 py-1 bg-gradient-to-r from-primary-400 to-purple-500 text-white text-sm font-semibold rounded-full">
                         {deal.percentOff}% OFF
                       </span>
                       <span className="text-sm text-gray-500">
                         {new Date(deal.endDate).toLocaleDateString()}
                       </span>
                     </div>
-                    <h3 className="text-lg font-semibold text-primary-800 mb-2">
-                      {deal.brand?.name}
-                    </h3>
+                    <h3 className="text-lg font-semibold text-primary-700 mb-2">{deal.brand?.name}</h3>
                     <p className="text-gray-700 mb-4">{deal.description}</p>
-                    <div className="bg-gray-100 p-3 rounded-lg">
+                    <div className="bg-gradient-to-r from-primary-50 to-purple-50 p-3 rounded-lg">
                       <p className="text-sm text-gray-600 mb-1">Use Code:</p>
-                      <p className="font-mono text-lg font-bold text-primary-700">
-                        {deal.code}
-                      </p>
+                      <p className="font-mono text-lg font-bold text-primary-700">{deal.code}</p>
                     </div>
-                  </motion.div>
-            ))}
-          </div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     );
@@ -168,5 +231,3 @@ class DealsPage extends Component {
 }
 
 export default DealsPage;
-
-

@@ -13,7 +13,7 @@ import BrandsPage from './pages/BrandsPage';
 import AdminDashboard from './pages/AdminDashboard';
 import UserDashboard from './pages/UserDashboard';
 import Navbar from './components/Navbar';
-
+import BrandDetailsPage from './pages/BrandDetailPage'
 class App extends Component {
   static contextType = AuthContext;
 
@@ -31,6 +31,7 @@ class App extends Component {
               <Route path="/categories" element={<CategoriesPage />} />
               <Route path="/blogs" element={<BlogsPage />} />
               <Route path="/brands" element={<BrandsPage />} />
+               <Route path="/brandDetail/:id" element={<BrandDetailsPage />} />
               
               {/* Protected Routes */}
               <Route 
