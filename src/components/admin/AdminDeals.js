@@ -101,11 +101,13 @@ class AdminDeals extends Component {
       editingDeal: deal,
       formData: {
         brand: deal.brand._id,
-        startDate: new Date(deal.startDate).toISOString().split('T')[0],
-        endDate: new Date(deal.endDate).toISOString().split('T')[0],
+        type:deal.type,
+        link: deal.link,
+        startDate: new Date(deal.startDate)?.toISOString()?.split('T')[0],
+        endDate: new Date(deal.endDate)?.toISOString()?.split('T')[0],
         code: deal.code,
         description: deal.description,
-        percentOff: deal.percentOff.toString(),
+        percentOff: deal?.percentOff?.toString(),
         isHot: deal.isHot,
       },
       showModal: true,
@@ -166,25 +168,47 @@ class AdminDeals extends Component {
       );
     }
 
+    const filteredDeals = this.state.selectedBrand
+  ? deals.filter((deal) => deal.brand?._id === this.state.selectedBrand)
+  : deals;
+
     return (
       <div className="space-y-6">
         {/* Header */}
-        <div className="flex justify-between items-center">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">Deal Management</h1>
-            <p className="text-gray-600 mt-2">Manage deals and promotional offers</p>
-          </div>
-          <button
-            onClick={this.openModal}
-            className="btn-primary"
-          >
-            Add New Deal
-          </button>
-        </div>
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+  <div>
+    <h1 className="text-3xl font-bold text-gray-900">Deal Management</h1>
+    <p className="text-gray-600 mt-2">Manage deals and promotional offers</p>
+  </div>
+
+  <div className="flex items-center space-x-3">
+    {/* Brand Filter Dropdown */}
+    <select
+      onChange={(e) => this.setState({ selectedBrand: e.target.value })}
+      className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-primary-500 focus:border-primary-500 text-sm"
+      value={this.state.selectedBrand || ""}
+    >
+      <option value="">All Brands</option>
+      {this.state.brands.map((brand) => (
+        <option key={brand._id} value={brand._id}>
+          {brand.name}
+        </option>
+      ))}
+    </select>
+
+    {/* Add New Deal Button */}
+    <button
+      onClick={this.openModal}
+      className="btn-primary whitespace-nowrap"
+    >
+      Add New Deal
+    </button>
+  </div>
+</div>
 
         {/* Deals Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {deals.map((deal) => (
+          {filteredDeals.map((deal) => (
             <div key={deal._id} className="card card-hover">
               <div className="flex justify-between items-start mb-4">
                 <div>
@@ -209,26 +233,29 @@ class AdminDeals extends Component {
               
               <div className="mb-4">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="bg-red-100 text-red-800 text-sm font-medium px-2.5 py-0.5 rounded">
+                   { deal.type !== 'offer' && <span className="bg-red-100 text-red-800 text-sm font-medium px-2.5 py-0.5 rounded">
                     {deal.percentOff}% OFF
-                  </span>
-                  {deal.isHot && (
+                  </span>}
+                   { deal.type == 'offer' && <span className="bg-yellow-100 text-red-800 text-sm font-medium px-2.5 py-0.5 rounded">
+                    OFFER
+                  </span>}
+                  {deal.isHot && deal.type !== 'offer' && (
                     <span className="bg-orange-100 text-orange-800 text-sm font-medium px-2.5 py-0.5 rounded">
                       🔥 HOT
                     </span>
                   )}
                 </div>
                 <p className="text-gray-600 text-sm mb-2">{deal.description}</p>
-                <div className="bg-gray-100 p-2 rounded">
+                { deal.type !== 'offer' && <div className="bg-gray-100 p-2 rounded">
                   <p className="text-xs text-gray-600 mb-1">Code:</p>
                   <p className="font-mono text-sm font-bold text-primary-600">{deal.code}</p>
-                </div>
+                </div>}
               </div>
               
-              <div className="text-xs text-gray-500">
+              { deal.type !== 'offer' &&<div className="text-xs text-gray-500">
                 <p>Start: {new Date(deal.startDate).toLocaleDateString()}</p>
                 <p>End: {new Date(deal.endDate).toLocaleDateString()}</p>
-              </div>
+              </div>}
             </div>
           ))}
         </div>

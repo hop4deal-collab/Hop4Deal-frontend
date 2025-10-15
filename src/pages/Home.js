@@ -187,19 +187,20 @@ export default function Home() {
                     >
                       <div className="flex items-start justify-between gap-4">
                         <div>
-                          <div className="text-xs inline-block font-semibold px-3 py-1 rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 text-white">{d.percentOff}% OFF</div>
+                          {d.type !== 'offer' && <div className="text-xs inline-block font-semibold px-3 py-1 rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 text-white">{d.percentOff}% OFF</div>}
                           <h3 className="mt-3 text-lg font-bold text-purple-800">{d.brand?.name || 'Top Brand'}</h3>
+                          {d.type == 'offer' && <div className="text-xs inline-block font-semibold px-3 py-1 rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 text-white">OFFER</div>}
                           <p className="text-sm text-gray-600 mt-2">{d.description?.slice(0, 90) || 'Exclusive offer'}</p>
                         </div>
-                        <div className="text-right">
+                        {d.type !== 'offer' && <div className="text-right">
                           <div className="text-xs text-gray-400">Ends</div>
                           <div className="font-mono font-bold text-sm text-purple-700">{d.endDate ? new Date(d.endDate).toLocaleDateString() : '—'}</div>
-                        </div>
+                        </div>}
                       </div>
 
                       <div className="mt-4 flex items-center justify-between gap-3">
-                        <button onClick={() => window.open(d.link, '_blank')} className="px-4 py-2 rounded-xl bg-purple-600 text-white font-semibold">Grab code</button>
-                        <div className="text-sm text-gray-500">Code: <span className="font-mono text-purple-700">{d.code || '—'}</span></div>
+                        <button onClick={() => window.open(d.link, '_blank')} className="px-4 py-2 rounded-xl bg-purple-600 text-white font-semibold">{d.type !== 'offer' ? 'Grab code' : 'Get Offer'}</button>
+                        {d.type !== 'offer' && <div className="text-sm text-gray-500">Code: <span className="font-mono text-purple-700">{d.code || '—'}</span></div>}
                       </div>
                     </motion.div>
                   ))}

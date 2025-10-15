@@ -11,6 +11,7 @@ class UserBrands extends Component {
       error: null,
       showModal: false,
       editingBrand: null,
+      searchTerm: '', // ✅ added
       formData: {
         name: '',
         description: '',
@@ -31,7 +32,7 @@ class UserBrands extends Component {
         brandsAPI.getAll(),
         categoriesAPI.getAll(),
       ]);
-      
+
       this.setState({
         brands: brandsRes.data,
         categories: categoriesRes.data,
@@ -46,9 +47,13 @@ class UserBrands extends Component {
     }
   };
 
+  handleSearchChange = (e) => {
+    this.setState({ searchTerm: e.target.value });
+  };
+
   handleInputChange = (e) => {
     const { name, value } = e.target;
-    this.setState(prevState => ({
+    this.setState((prevState) => ({
       formData: {
         ...prevState.formData,
         [name]: value,
@@ -57,27 +62,27 @@ class UserBrands extends Component {
   };
 
   handleFileChange = (event) => {
-  const file = event.target.files[0];
-  if (file) {
-    this.setState((prevState) => ({
-      formData: {
-        ...prevState.formData,
-        logo: file
-      }
-    }));
-  }
-};
+    const file = event.target.files[0];
+    if (file) {
+      this.setState((prevState) => ({
+        formData: {
+          ...prevState.formData,
+          logo: file,
+        },
+      }));
+    }
+  };
 
   handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     try {
       if (this.state.editingBrand) {
         await brandsAPI.update(this.state.editingBrand._id, this.state.formData);
       } else {
         await brandsAPI.create(this.state.formData);
       }
-      
+
       this.setState({
         showModal: false,
         editingBrand: null,
@@ -89,7 +94,7 @@ class UserBrands extends Component {
           category: '',
         },
       });
-      
+
       this.loadData();
     } catch (error) {
       console.error('Error saving brand:', error);
@@ -133,7 +138,7 @@ class UserBrands extends Component {
   };
 
   render() {
-    const { brands, categories, loading, error, showModal, formData, editingBrand } = this.state;
+    const { brands, categories, loading, error, showModal, formData, editingBrand, searchTerm } = this.state;
 
     if (loading) {
       return (
@@ -151,62 +156,88 @@ class UserBrands extends Component {
       );
     }
 
+    // ✅ Filter brands by search term
+    const filteredBrands = brands.filter((brand) =>
+      brand.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
     return (
       <div className="space-y-6">
         {/* Header */}
-        <div className="flex justify-between items-center">
+        <div className="flex flex-col md:flex-row justify-between items-center gap-4">
           <div>
             <h1 className="text-3xl font-bold text-gray-900">Brand Management</h1>
             <p className="text-gray-600 mt-2">Manage brand information and categories</p>
           </div>
-          <button
-            onClick={this.openModal}
-            className="btn-primary"
-          >
-            Add New Brand
-          </button>
+
+          {/* ✅ Search Bar + Add Button */}
+          <div className="flex items-center w-full md:w-auto gap-3">
+            <input
+              type="text"
+              placeholder="Search brands..."
+              value={searchTerm}
+              onChange={this.handleSearchChange}
+              className="w-full md:w-64 border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+            />
+            <button
+              onClick={this.openModal}
+              className="btn-primary whitespace-nowrap"
+            >
+              Add New Brand
+            </button>
+          </div>
         </div>
 
         {/* Brands Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {brands.map((brand) => (
-            <div key={brand._id} className="card card-hover">
-              <div className="flex justify-between items-start mb-4">
-                <div className="flex items-center">
-                  {brand.logo ? (
-                    <img
-                      src={brand.logo ? (brand.logo?.startsWith('/upload') ? `${process.env.REACT_APP_API_URL.slice(0, -4)}${brand.logo}` : null) : null}
-                      alt={brand.name}
-                      className="w-12 h-12 rounded-full mr-3"
-                    />
-                  ) : (
-                    <div className="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center mr-3">
-                      <span className="text-primary-600 font-bold">
-                        {brand.name.charAt(0)}
-                      </span>
+          {filteredBrands.length > 0 ? (
+            filteredBrands.map((brand) => (
+              <div key={brand._id} className="card card-hover">
+                <div className="flex justify-between items-start mb-4">
+                  <div className="flex items-center">
+                    {brand.logo ? (
+                      <img
+                        src={
+                          brand.logo?.startsWith('/upload')
+                            ? `${process.env.REACT_APP_API_URL.slice(0, -4)}${brand.logo}`
+                            : brand.logo
+                        }
+                        alt={brand.name}
+                        className="w-12 h-12 rounded-full mr-3"
+                      />
+                    ) : (
+                      <div className="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center mr-3">
+                        <span className="text-primary-600 font-bold">
+                          {brand.name.charAt(0)}
+                        </span>
+                      </div>
+                    )}
+                    <div className="flex-1">
+                      <h3 className="text-lg font-semibold text-gray-900">{brand.name}</h3>
+                      <p className="text-sm text-gray-500">{brand.category?.name}</p>
                     </div>
-                  )}
-                  <div className="flex-1">
-                    <h3 className="text-lg font-semibold text-gray-900">{brand.name}</h3>
-                    <p className="text-sm text-gray-500">{brand.category?.name}</p>
                   </div>
+                  <button
+                    onClick={() => this.handleEdit(brand)}
+                    className="text-primary-600 hover:text-primary-900 text-sm"
+                  >
+                    Edit
+                  </button>
                 </div>
-                <button
-                  onClick={() => this.handleEdit(brand)}
-                  className="text-primary-600 hover:text-primary-900 text-sm"
-                >
-                  Edit
-                </button>
+                <p className="text-gray-600 text-sm mb-2">{brand.description}</p>
+                {brand.tagline && (
+                  <p className="text-primary-600 text-sm italic mb-4">"{brand.tagline}"</p>
+                )}
+                <div className="text-xs text-gray-500">
+                  Created: {new Date(brand.createdAt).toLocaleDateString()}
+                </div>
               </div>
-              <p className="text-gray-600 text-sm mb-2">{brand.description}</p>
-              {brand.tagline && (
-                <p className="text-primary-600 text-sm italic mb-4">"{brand.tagline}"</p>
-              )}
-              <div className="text-xs text-gray-500">
-                Created: {new Date(brand.createdAt).toLocaleDateString()}
-              </div>
+            ))
+          ) : (
+            <div className="text-center col-span-full text-gray-500 py-10">
+              No brands found matching your search.
             </div>
-          ))}
+          )}
         </div>
 
         {/* Modal */}
@@ -231,7 +262,7 @@ class UserBrands extends Component {
                       className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-primary-500 focus:border-primary-500"
                     />
                   </div>
-                  
+
                   <div>
                     <label className="block text-sm font-medium text-gray-700">
                       Category
@@ -266,19 +297,7 @@ class UserBrands extends Component {
                     />
                   </div>
 
-                  {/* <div>
-                    <label className="block text-sm font-medium text-gray-700">
-                      Logo URL
-                    </label>
-                    <input
-                      type="url"
-                      name="logo"
-                      value={formData.logo}
-                      onChange={this.handleInputChange}
-                      className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-primary-500 focus:border-primary-500"
-                    />
-                  </div> */}
-                   <div>
+                  <div>
                     <label className="block text-sm font-medium text-gray-700">
                       Logo Image
                     </label>
@@ -330,4 +349,3 @@ class UserBrands extends Component {
 }
 
 export default UserBrands;
-

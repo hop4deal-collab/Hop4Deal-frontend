@@ -101,11 +101,13 @@ class UserDeals extends Component {
       editingDeal: deal,
       formData: {
         brand: deal.brand._id,
-        startDate: new Date(deal.startDate).toISOString().split('T')[0],
-        endDate: new Date(deal.endDate).toISOString().split('T')[0],
+         type:deal.type,
+        link: deal.link,
+        startDate: new Date(deal.startDate)?.toISOString()?.split('T')[0],
+        endDate: new Date(deal.endDate)?.toISOString()?.split('T')[0],
         code: deal.code,
         description: deal.description,
-        percentOff: deal.percentOff.toString(),
+        percentOff: deal.percentOff?.toString(),
         isHot: deal.isHot,
       },
       showModal: true,
@@ -187,28 +189,31 @@ class UserDeals extends Component {
                 </button>
               </div>
               
-              <div className="mb-4">
+             <div className="mb-4">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="bg-red-100 text-red-800 text-sm font-medium px-2.5 py-0.5 rounded">
+                   { deal.type !== 'offer' && <span className="bg-red-100 text-red-800 text-sm font-medium px-2.5 py-0.5 rounded">
                     {deal.percentOff}% OFF
-                  </span>
-                  {deal.isHot && (
+                  </span>}
+                   { deal.type == 'offer' && <span className="bg-yellow-100 text-red-800 text-sm font-medium px-2.5 py-0.5 rounded">
+                    OFFER
+                  </span>}
+                  {deal.isHot && deal.type !== 'offer' && (
                     <span className="bg-orange-100 text-orange-800 text-sm font-medium px-2.5 py-0.5 rounded">
                       🔥 HOT
                     </span>
                   )}
                 </div>
                 <p className="text-gray-600 text-sm mb-2">{deal.description}</p>
-                <div className="bg-gray-100 p-2 rounded">
+                { deal.type !== 'offer' && <div className="bg-gray-100 p-2 rounded">
                   <p className="text-xs text-gray-600 mb-1">Code:</p>
                   <p className="font-mono text-sm font-bold text-primary-600">{deal.code}</p>
-                </div>
+                </div>}
               </div>
               
-              <div className="text-xs text-gray-500">
+              { deal.type !== 'offer' &&<div className="text-xs text-gray-500">
                 <p>Start: {new Date(deal.startDate).toLocaleDateString()}</p>
                 <p>End: {new Date(deal.endDate).toLocaleDateString()}</p>
-              </div>
+              </div>}
             </div>
           ))}
         </div>

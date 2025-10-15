@@ -206,19 +206,22 @@ class DealsPage extends Component {
                 >
                   <div className="p-6">
                     <div className="flex items-center justify-between mb-4">
-                      <span className="px-3 py-1 bg-gradient-to-r from-primary-400 to-purple-500 text-white text-sm font-semibold rounded-full">
+                      { deal.type !== 'offer' &&<span className="px-3 py-1 bg-gradient-to-r from-primary-400 to-purple-500 text-white text-sm font-semibold rounded-full">
                         {deal.percentOff}% OFF
-                      </span>
-                      <span className="text-sm text-gray-500">
+                      </span>}
+                       { deal.type == 'offer' &&<span className="px-3 py-1 bg-gradient-to-r from-primary-400 to-purple-500 text-white text-sm font-semibold rounded-full">
+                        OFFER
+                      </span>}
+                      { deal.type !== 'offer' &&<span className="text-sm text-gray-500">
                         {new Date(deal.endDate).toLocaleDateString()}
-                      </span>
+                      </span>}
                     </div>
                     <h3 className="text-lg font-semibold text-primary-700 mb-2">{deal.brand?.name}</h3>
                     <p className="text-gray-700 mb-4">{deal.description}</p>
-                    <div className="bg-gradient-to-r from-primary-50 to-purple-50 p-3 rounded-lg">
+                    { deal.type !== 'offer' && <div className="bg-gradient-to-r from-primary-50 to-purple-50 p-3 rounded-lg">
                       <p className="text-sm text-gray-600 mb-1">Use Code:</p>
                       <p className="font-mono text-lg font-bold text-primary-700">{deal.code}</p>
-                    </div>
+                    </div>}
                   </div>
                 </motion.div>
               ))}
