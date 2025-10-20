@@ -18,7 +18,7 @@ class ProtectedRoute extends Component {
     }
 
     if (!isAuthenticated) {
-      return <Navigate to="/login" replace />;
+      return <Navigate to="/896552147/login" replace />;
     }
 
     if (requireAdmin && user.role !== 'admin') {

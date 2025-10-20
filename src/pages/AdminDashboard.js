@@ -20,7 +20,7 @@ class AdminDashboard extends Component {
       <div className="min-h-screen bg-gray-50">
         <div className="flex">
           <AdminSidebar location={this.props.location} />
-          <main className="flex-1 ml-64">
+          <main className="">
             <div className="py-6">
               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <Routes>

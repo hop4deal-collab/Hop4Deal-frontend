@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { brandsAPI, categoriesAPI } from '../../services/api';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 class AdminBrands extends Component {
   constructor(props) {
@@ -46,6 +48,7 @@ class AdminBrands extends Component {
         error: 'Failed to load data',
         loading: false,
       });
+      toast.error('Failed to load brands or categories');
     }
   };
 
@@ -85,8 +88,10 @@ class AdminBrands extends Component {
     try {
       if (this.state.editingBrand) {
         await brandsAPI.update(this.state.editingBrand._id, this.state.formData);
+        toast.success('Brand updated successfully!');
       } else {
         await brandsAPI.create(this.state.formData);
+        toast.success('Brand created successfully!');
       }
 
       this.setState({
@@ -97,13 +102,14 @@ class AdminBrands extends Component {
           description: '',
           tagline: '',
           category: '',
+          logo: '',
         },
       });
 
       this.loadData();
     } catch (error) {
       console.error('Error saving brand:', error);
-      alert('Failed to save brand');
+      toast.error('Failed to save brand. Please try again.');
     }
   };
 
@@ -115,7 +121,7 @@ class AdminBrands extends Component {
         description: brand.description,
         logo: brand.logo,
         tagline: brand.tagline,
-        category: brand.category._id,
+        category: brand.category?._id || '',
       },
       showModal: true,
     });
@@ -125,10 +131,11 @@ class AdminBrands extends Component {
     if (window.confirm('Are you sure you want to delete this brand?')) {
       try {
         await brandsAPI.delete(brandId);
+        toast.success('Brand deleted successfully!');
         this.loadData();
       } catch (error) {
         console.error('Error deleting brand:', error);
-        alert('Failed to delete brand');
+        toast.error('Failed to delete brand. Please try again.');
       }
     }
   };
@@ -184,7 +191,7 @@ class AdminBrands extends Component {
 
     return (
       <div className="space-y-6">
-        {/* Header with Search + Add Button */}
+        {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-center md:items-end gap-4">
           <div className="flex-1 w-full md:w-auto">
             <h1 className="text-3xl font-bold text-gray-900">Brand Management</h1>
@@ -214,11 +221,9 @@ class AdminBrands extends Component {
                     {brand.logo ? (
                       <img
                         src={
-                          brand.logo
-                            ? brand.logo?.startsWith('/upload')
-                              ? `${process.env.REACT_APP_API_URL.slice(0, -4)}${brand.logo}`
-                              : brand.logo
-                            : null
+                          brand.logo?.startsWith('/upload')
+                            ? `${process.env.REACT_APP_API_URL.slice(0, -4)}${brand.logo}`
+                            : brand.logo
                         }
                         alt={brand.name}
                         className="w-12 h-12 rounded-full mr-3 object-cover"
@@ -278,9 +283,7 @@ class AdminBrands extends Component {
                 </h3>
                 <form onSubmit={this.handleSubmit} className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">
-                      Brand Name
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700">Brand Name</label>
                     <input
                       type="text"
                       name="name"
@@ -292,9 +295,7 @@ class AdminBrands extends Component {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">
-                      Category
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700">Category</label>
                     <select
                       name="category"
                       value={formData.category}
@@ -312,9 +313,7 @@ class AdminBrands extends Component {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">
-                      Description
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700">Description</label>
                     <textarea
                       name="description"
                       value={formData.description}
@@ -326,9 +325,7 @@ class AdminBrands extends Component {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">
-                      Logo Image
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700">Logo Image</label>
                     <input
                       type="file"
                       name="logoFile"
@@ -339,9 +336,7 @@ class AdminBrands extends Component {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">
-                      Tagline
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700">Tagline</label>
                     <input
                       type="text"
                       name="tagline"

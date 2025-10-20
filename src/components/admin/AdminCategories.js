@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { categoriesAPI } from '../../services/api';
+import { toast } from 'react-toastify';
 
 class AdminCategories extends Component {
   constructor(props) {
@@ -34,12 +35,13 @@ class AdminCategories extends Component {
         error: 'Failed to load categories',
         loading: false,
       });
+      toast.error('Failed to load categories.');
     }
   };
 
   handleInputChange = (e) => {
     const { name, value } = e.target;
-    this.setState(prevState => ({
+    this.setState((prevState) => ({
       formData: {
         ...prevState.formData,
         [name]: value,
@@ -49,14 +51,16 @@ class AdminCategories extends Component {
 
   handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     try {
       if (this.state.editingCategory) {
         await categoriesAPI.update(this.state.editingCategory._id, this.state.formData);
+        toast.success('Category updated successfully!');
       } else {
         await categoriesAPI.create(this.state.formData);
+        toast.success('Category created successfully!');
       }
-      
+
       this.setState({
         showModal: false,
         editingCategory: null,
@@ -65,11 +69,11 @@ class AdminCategories extends Component {
           description: '',
         },
       });
-      
+
       this.loadCategories();
     } catch (error) {
       console.error('Error saving category:', error);
-      alert('Failed to save category');
+      toast.error('Failed to save category.');
     }
   };
 
@@ -89,9 +93,10 @@ class AdminCategories extends Component {
       try {
         await categoriesAPI.delete(categoryId);
         this.loadCategories();
+        toast.success('Category deleted successfully!');
       } catch (error) {
         console.error('Error deleting category:', error);
-        alert('Failed to delete category');
+        toast.error('Failed to delete category.');
       }
     }
   };
@@ -141,10 +146,7 @@ class AdminCategories extends Component {
             <h1 className="text-3xl font-bold text-gray-900">Category Management</h1>
             <p className="text-gray-600 mt-2">Manage product categories</p>
           </div>
-          <button
-            onClick={this.openModal}
-            className="btn-primary"
-          >
+          <button onClick={this.openModal} className="btn-primary">
             Add New Category
           </button>
         </div>
@@ -200,7 +202,7 @@ class AdminCategories extends Component {
                       className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-primary-500 focus:border-primary-500"
                     />
                   </div>
-                  
+
                   <div>
                     <label className="block text-sm font-medium text-gray-700">
                       Description
@@ -223,10 +225,7 @@ class AdminCategories extends Component {
                     >
                       Cancel
                     </button>
-                    <button
-                      type="submit"
-                      className="btn-primary"
-                    >
+                    <button type="submit" className="btn-primary">
                       {editingCategory ? 'Update' : 'Create'}
                     </button>
                   </div>
@@ -241,4 +240,3 @@ class AdminCategories extends Component {
 }
 
 export default AdminCategories;
-
