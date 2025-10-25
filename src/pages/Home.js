@@ -21,12 +21,12 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showPopup, setShowPopup] = useState(false);
-const [currentImage, setCurrentImage] = useState(0);
+  const [currentImage, setCurrentImage] = useState(0);
 
 
   useEffect(() => {
     loadData();
-     if (popupImages.length > 0) setTimeout(() => setShowPopup(true), 800);
+    if (popupImages.length > 0) setTimeout(() => setShowPopup(true), 800);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -94,26 +94,26 @@ const [currentImage, setCurrentImage] = useState(0);
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-purple-50 overflow-x-hidden">
       {/* scoped styles for gradient animation & blobs */}
- <section className="relative w-full overflow-x-hidden">
-  <div className="relative w-full overflow-hidden rounded-b-3xl shadow-md">
-    <img
-      src={banner}
-      alt="Hop4Deals Banner"
-      className="block w-full h-[200px] sm:h-[300px] md:h-[470px] object-cover"
-    />
-  </div>
-</section>
+      <section className="relative w-full overflow-x-hidden">
+        <div className="relative w-full overflow-hidden rounded-b-3xl shadow-md">
+          <img
+            src={banner}
+            alt="Hop4Deals Banner"
+            className="block w-full h-[200px] sm:h-[300px] md:h-[470px] object-cover"
+          />
+        </div>
+      </section>
       <style>{`
         @keyframes gradientShift { 0% { background-position: 0% 50% } 50% { background-position: 100% 50% } 100% { background-position: 0% 50% } }
         .animate-gradient { background-size: 200% 200%; animation: gradientShift 8s ease infinite; }
         @keyframes floaty { 0% { transform: translateY(0px) } 50% { transform: translateY(-12px) } 100% { transform: translateY(0px) } }
         .floaty { animation: floaty 6s ease-in-out infinite; }
       `}</style>
-       
 
-       {showPopup && (
+
+      {showPopup && (
   <div
-    className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 px-4"
+    className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 px-2 sm:px-4"
     onClick={() => setShowPopup(false)}
   >
     <motion.div
@@ -121,12 +121,12 @@ const [currentImage, setCurrentImage] = useState(0);
       initial={{ scale: 0.9, opacity: 0 }}
       animate={{ scale: 1, opacity: 1 }}
       exit={{ scale: 0.9, opacity: 0 }}
-      className="relative bg-white rounded-3xl shadow-2xl overflow-hidden max-w-3xl w-full"
+      className="relative bg-black rounded-2xl shadow-2xl overflow-hidden w-full max-w-3xl"
     >
       <img
         src={popupImages[currentImage]}
         alt={`Promo ${currentImage + 1}`}
-        className="w-full h-[60vh] object-contain bg-black"
+        className="w-full max-h-[90vh] object-cover sm:object-contain"
       />
 
       {/* Navigation */}
@@ -138,7 +138,7 @@ const [currentImage, setCurrentImage] = useState(0);
                 prev === 0 ? popupImages.length - 1 : prev - 1
               )
             }
-            className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/70 hover:bg-white text-purple-700 p-2 rounded-full shadow"
+            className="absolute left-3 top-1/2 -translate-y-1/2 bg-white/70 hover:bg-white text-purple-700 p-2 rounded-full shadow"
           >
             ❮
           </button>
@@ -149,7 +149,7 @@ const [currentImage, setCurrentImage] = useState(0);
                 prev === popupImages.length - 1 ? 0 : prev + 1
               )
             }
-            className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/70 hover:bg-white text-purple-700 p-2 rounded-full shadow"
+            className="absolute right-3 top-1/2 -translate-y-1/2 bg-white/70 hover:bg-white text-purple-700 p-2 rounded-full shadow"
           >
             ❯
           </button>
@@ -168,6 +168,7 @@ const [currentImage, setCurrentImage] = useState(0);
 )}
 
 
+
       {/* HERO */}
       <section className="relative overflow-hidden">
         {/* decorative blobs (SVG) */}
@@ -183,7 +184,7 @@ const [currentImage, setCurrentImage] = useState(0);
           </g>
         </svg>
 
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24" style={{ paddingBottom: 0 }}>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
             <div>
               <motion.h1
@@ -192,7 +193,7 @@ const [currentImage, setCurrentImage] = useState(0);
                 transition={{ duration: 0.7 }}
                 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight bg-clip-text text-transparent bg-gradient-to-r from-purple-700 via-purple-500 to-indigo-600"
               >
-                Find the best <span className="whitespace-nowrap">deals</span> — faster.
+                Best coupons & deals<span className="whitespace-nowrap">  updated </span> — daily
               </motion.h1>
 
               <motion.p
@@ -201,21 +202,26 @@ const [currentImage, setCurrentImage] = useState(0);
                 transition={{ delay: 0.15, duration: 0.6 }}
                 className="mt-6 text-lg text-gray-700 max-w-xl"
               >
-                Hop4Deals curates top discounts, promo codes and limited-time offers from trusted brands. Stay ahead — save more.
+                Discover verified discounts, exclusive brand coupons, and flash deals — all curated daily so you can save more, faster
               </motion.p>
 
               <div className="mt-8 flex flex-wrap gap-4 items-center">
                 <motion.a
+                  initial={{ opacity: 0, x: -30 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.7 }}
                   whileHover={{ scale: 1.03 }}
                   className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-semibold shadow-lg hover:shadow-2xl"
                   href="#hot-deals"
                 >
                   Explore deals
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className="ml-1"><path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className="ml-1"><path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
                 </motion.a>
 
                 <Link to="/deals" className="text-sm text-purple-700 font-medium hover:underline">Browse all deals</Link>
               </div>
+
+              <div></div>
 
               {/* Search / Quick filter */}
               <motion.div
@@ -250,65 +256,65 @@ const [currentImage, setCurrentImage] = useState(0);
             <div className="hidden lg:block">
               <div className="relative">
                 <motion.div
-  initial={{ opacity: 0, scale: 0.95, y: 20 }}
-  animate={{ opacity: 1, scale: 1, y: 0 }}
-  transition={{ delay: 0.35 }}
-  className="grid grid-cols-1 gap-6"
->
-  {hotDeals.slice(0, 3).map((d, i) => (
-    <motion.div
-      key={d._id || i}
-       onClick={() => {
-      if (d.type === "offer") window.open(d.link, "_blank");
-    }}
-      whileHover={{ translateY: -8 }}
-      className="bg-white/90 rounded-3xl p-6 shadow-2xl border border-white/30 backdrop-blur"
-    >
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          {d.type !== "offer" && (
-            <div className="text-xs inline-block font-semibold px-3 py-1 rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 text-white">
-              {d.percentOff}% OFF
-            </div>
-          )}
-          <h3 className="mt-3 text-lg font-bold text-purple-800">
-            {d.brand?.name || "Top Brand"}
-          </h3>
-          {d.type === "offer" && (
-            <div className="text-xs inline-block font-semibold px-3 py-1 rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 text-white">
-              OFFER
-            </div>
-          )}
-          <p className="text-sm text-gray-600 mt-2">
-            {d.description?.slice(0, 90) || "Exclusive offer"}
-          </p>
-        </div>
+                  initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  transition={{ delay: 0.35 }}
+                  className="grid grid-cols-1 gap-6"
+                >
+                  {hotDeals.slice(0, 3).map((d, i) => (
+                    <motion.div
+                      key={d._id || i}
+                      onClick={() => {
+                        if (d.type === "offer") window.open(d.link, "_blank");
+                      }}
+                      whileHover={{ translateY: -8 }}
+                      className="bg-white/90 rounded-3xl p-6 shadow-2xl border border-white/30 backdrop-blur"
+                    >
+                      <div className="flex items-start justify-between gap-4">
+                        <div>
+                          {d.type !== "offer" && (
+                            <div className="text-xs inline-block font-semibold px-3 py-1 rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 text-white">
+                              {d.percentOff}% OFF
+                            </div>
+                          )}
+                          <h3 className="mt-3 text-lg font-bold text-purple-800">
+                            {d.brand?.name || "Top Brand"}
+                          </h3>
+                          {d.type === "offer" && (
+                            <div className="text-xs inline-block font-semibold px-3 py-1 rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 text-white">
+                              OFFER
+                            </div>
+                          )}
+                          <p className="text-sm text-gray-600 mt-2">
+                            {d.description?.slice(0, 90) || "Exclusive offer"}
+                          </p>
+                        </div>
 
-        {d.type !== "offer" && (
-          <div className="text-right">
-            <div className="text-xs text-gray-400">Ends</div>
-            <div className="font-mono font-bold text-sm text-purple-700">
-              {d.endDate ? new Date(d.endDate).toLocaleDateString() : "—"}
-            </div>
-          </div>
-        )}
-      </div>
+                        {d.type !== "offer" && (
+                          <div className="text-right">
+                            <div className="text-xs text-gray-400">Ends</div>
+                            <div className="font-mono font-bold text-sm text-purple-700">
+                              {d.endDate ? new Date(d.endDate).toLocaleDateString() : "—"}
+                            </div>
+                          </div>
+                        )}
+                      </div>
 
-      <div className="mt-4 flex items-center justify-between gap-3">
-       <GrabCodeButton code={d.code} link={d.link} type={d.type} />
-      </div>
-    </motion.div>
-  ))}
-</motion.div>
+                      <div className="mt-4 flex items-center justify-between gap-3">
+                        <GrabCodeButton code={d.code} link={d.link} type={d.type} />
+                      </div>
+                    </motion.div>
+                  ))}
+                </motion.div>
 
 
                 {/* small floating accent */}
                 <div className="absolute -right-12 top-8 w-40 h-40 opacity-30">
                   <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
                     <defs>
-                      <linearGradient id="g2" x1="0" x2="1"><stop offset="0" stopColor="#A78BFA"/><stop offset="1" stopColor="#7C3AED"/></linearGradient>
+                      <linearGradient id="g2" x1="0" x2="1"><stop offset="0" stopColor="#A78BFA" /><stop offset="1" stopColor="#7C3AED" /></linearGradient>
                     </defs>
-                    <path fill="url(#g2)" d="M43.4,-66.6C57.3,-56.1,69,-45.3,74.6,-31.9C80.2,-18.5,79.7,-2.5,72.3,12.6C64.9,27.7,50.6,41.8,34.6,50.5C18.6,59.2,0.9,62.6,-15.9,63.3C-32.7,64,-49.4,62,-59.9,51.3C-70.4,40.7,-74.7,21.4,-72.6,4C-70.4,-13.4,-61.9,-26.8,-51,-38.5C-40.2,-50.3,-28,-60.3,-13.3,-69.4C1.3,-78.5,16.5,-86.9,32.3,-85.3C48.1,-83.7,64.5,-72.2,43.4,-66.6Z" transform="translate(100 100)"/>
+                    <path fill="url(#g2)" d="M43.4,-66.6C57.3,-56.1,69,-45.3,74.6,-31.9C80.2,-18.5,79.7,-2.5,72.3,12.6C64.9,27.7,50.6,41.8,34.6,50.5C18.6,59.2,0.9,62.6,-15.9,63.3C-32.7,64,-49.4,62,-59.9,51.3C-70.4,40.7,-74.7,21.4,-72.6,4C-70.4,-13.4,-61.9,-26.8,-51,-38.5C-40.2,-50.3,-28,-60.3,-13.3,-69.4C1.3,-78.5,16.5,-86.9,32.3,-85.3C48.1,-83.7,64.5,-72.2,43.4,-66.6Z" transform="translate(100 100)" />
                   </svg>
                 </div>
               </div>
@@ -331,7 +337,7 @@ const [currentImage, setCurrentImage] = useState(0);
             </div>
           </div>
         </div>
-      </section> 
+      </section>
 
       {/* CATEGORIES */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
@@ -369,15 +375,15 @@ const [currentImage, setCurrentImage] = useState(0);
                 {(categoryBrands[cat._id] || []).slice(0, 4).map((b) => (
                   <Link key={b._id} to={`/deals?brand=${b._id}`} className="flex items-center gap-3 bg-purple-50/60 p-2 rounded-lg hover:bg-purple-50 transition">
                     {b.logo ? (
-                      <img 
-                      src={b.logo ? (b.logo?.startsWith('/upload') ? `${process.env.REACT_APP_API_URL.slice(0, -4)}${b.logo}` : null) : null}
-                      alt={b.name} className="w-10 h-10 rounded-full object-cover" />
+                      <img
+                        src={b.logo ? (b.logo?.startsWith('/upload') ? `${process.env.REACT_APP_API_URL.slice(0, -4)}${b.logo}` : null) : null}
+                        alt={b.name} className="w-10 h-10 rounded-full object-cover" />
                     ) : (
                       <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">{b.name?.charAt(0)}</div>
                     )}
                     <div className="text-sm">
                       <div className="font-medium text-purple-800">{b.name}</div>
-                      <div className="text-xs text-gray-500">{Math.floor(Math.random()*5)+1} deals</div>
+                      <div className="text-xs text-gray-500">{Math.floor(Math.random() * 5) + 1} deals</div>
                     </div>
                   </Link>
                 ))}
@@ -393,81 +399,81 @@ const [currentImage, setCurrentImage] = useState(0);
 
       {/* Trending brands (horizontal marquee) */}
       <section className="py-8 bg-white/60 overflow-hidden">
-  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div className="flex items-center justify-between mb-6">
-      <h3 className="text-lg font-semibold text-purple-800">Trending Brands</h3>
-      <Link to="/brands" className="text-purple-700 font-medium">
-        All brands
-      </Link>
-    </div>
-
-    {/* ✅ Show marquee only on md+ screens */}
-    <div className="relative w-full overflow-hidden hidden md:block">
-      <div className="flex gap-6 whitespace-nowrap animate-marquee will-change-transform">
-        {trendingBrands.concat(trendingBrands).map((b, i) => (
-          <Link
-            key={`${b._id}-${i}`}
-            to={`/deals?brand=${b._id}`}
-            className="inline-flex items-center gap-3 bg-white p-3 rounded-2xl shadow-sm border border-gray-100 min-w-[160px] flex-shrink-0"
-          >
-            <div className="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center overflow-hidden">
-              {b.logo ? (
-                <img
-                  src={
-                    b.logo?.startsWith('/upload')
-                      ? `${process.env.REACT_APP_API_URL.slice(0, -4)}${b.logo}`
-                      : b.logo
-                  }
-                  alt={b.name}
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                b.name?.charAt(0)
-              )}
-            </div>
-            <div className="text-left">
-              <div className="font-semibold text-purple-800">{b.name}</div>
-              <div className="text-xs text-gray-500">{b.tagline || ''}</div>
-            </div>
-          </Link>
-        ))}
-      </div>
-    </div>
-
-    {/* ✅ Simple grid for mobile */}
-    <div className="grid grid-cols-2 gap-4 md:hidden">
-      {trendingBrands.slice(0, 6).map((b) => (
-        <Link
-          key={b._id}
-          to={`/deals?brand=${b._id}`}
-          className="flex items-center gap-3 bg-white p-3 rounded-xl shadow-sm border border-gray-100"
-        >
-          <div className="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center overflow-hidden">
-            {b.logo ? (
-              <img
-                src={
-                  b.logo?.startsWith('/upload')
-                    ? `${process.env.REACT_APP_API_URL.slice(0, -4)}${b.logo}`
-                    : b.logo
-                }
-                alt={b.name}
-                className="w-full h-full object-cover"
-              />
-            ) : (
-              b.name?.charAt(0)
-            )}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-lg font-semibold text-purple-800">Trending Brands</h3>
+            <Link to="/brands" className="text-purple-700 font-medium">
+              All brands
+            </Link>
           </div>
-          <div className="text-left">
-            <div className="font-semibold text-purple-800 text-sm">{b.name}</div>
-            <div className="text-xs text-gray-500">{b.tagline || ''}</div>
-          </div>
-        </Link>
-      ))}
-    </div>
-  </div>
 
-  {/* Animation */}
-  <style>{`
+          {/* ✅ Show marquee only on md+ screens */}
+          <div className="relative w-full overflow-hidden hidden md:block">
+            <div className="flex gap-6 whitespace-nowrap animate-marquee will-change-transform">
+              {trendingBrands.concat(trendingBrands).map((b, i) => (
+                <Link
+                  key={`${b._id}-${i}`}
+                  to={`/deals?brand=${b._id}`}
+                  className="inline-flex items-center gap-3 bg-white p-3 rounded-2xl shadow-sm border border-gray-100 min-w-[160px] flex-shrink-0"
+                >
+                  <div className="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center overflow-hidden">
+                    {b.logo ? (
+                      <img
+                        src={
+                          b.logo?.startsWith('/upload')
+                            ? `${process.env.REACT_APP_API_URL.slice(0, -4)}${b.logo}`
+                            : b.logo
+                        }
+                        alt={b.name}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      b.name?.charAt(0)
+                    )}
+                  </div>
+                  <div className="text-left">
+                    <div className="font-semibold text-purple-800">{b.name}</div>
+                    <div className="text-xs text-gray-500">{b.tagline || ''}</div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+
+          {/* ✅ Simple grid for mobile */}
+          <div className="grid grid-cols-2 gap-4 md:hidden">
+            {trendingBrands.slice(0, 6).map((b) => (
+              <Link
+                key={b._id}
+                to={`/deals?brand=${b._id}`}
+                className="flex items-center gap-3 bg-white p-3 rounded-xl shadow-sm border border-gray-100"
+              >
+                <div className="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center overflow-hidden">
+                  {b.logo ? (
+                    <img
+                      src={
+                        b.logo?.startsWith('/upload')
+                          ? `${process.env.REACT_APP_API_URL.slice(0, -4)}${b.logo}`
+                          : b.logo
+                      }
+                      alt={b.name}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    b.name?.charAt(0)
+                  )}
+                </div>
+                <div className="text-left">
+                  <div className="font-semibold text-purple-800 text-sm">{b.name}</div>
+                  <div className="text-xs text-gray-500">{b.tagline || ''}</div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+
+        {/* Animation */}
+        <style>{`
     @keyframes marquee {
       0% { transform: translateX(0); }
       100% { transform: translateX(-50%); }
@@ -477,11 +483,11 @@ const [currentImage, setCurrentImage] = useState(0);
       animation: marquee 20s linear infinite;
     }
   `}</style>
-</section>
+      </section>
 
 
 
-     
+
       {/* Featured blogs */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="flex items-center justify-between mb-6">
@@ -490,7 +496,7 @@ const [currentImage, setCurrentImage] = useState(0);
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {featuredBlogs.slice(0,3).map((b, i) => (
+          {featuredBlogs.slice(0, 3).map((b, i) => (
             <motion.article key={b._id || i} whileHover={{ y: -6 }} className="bg-white rounded-2xl shadow-md overflow-hidden">
               {b.image ? <img src={b.image} alt={b.headline} className="w-full h-44 object-cover" /> : <div className="h-44 bg-purple-50 flex items-center justify-center">No image</div>}
               <div className="p-4">
@@ -510,7 +516,7 @@ const [currentImage, setCurrentImage] = useState(0);
           <p className="text-gray-600 mt-2">Real users, real savings</p>
 
           <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
-            {[{name:'Praggy', text:'Saved 40% on a laptop — the code worked instantly.'},{name:'Jonathon', text:'Fast site, legit brands.'},{name:'Stacy', text:'Great curated deals. Highly recommend.'}].map((r,i)=>(
+            {[{ name: 'Praggy', text: 'Saved 40% on a laptop — the code worked instantly.' }, { name: 'Jonathon', text: 'Fast site, legit brands.' }, { name: 'Stacy', text: 'Great curated deals. Highly recommend.' }].map((r, i) => (
               <motion.div key={i} whileHover={{ scale: 1.03 }} className="bg-white p-6 rounded-2xl shadow-md">
                 <p className="text-gray-700 italic">"{r.text}"</p>
                 <div className="mt-4 font-semibold text-purple-800">— {r.name}</div>
@@ -520,7 +526,7 @@ const [currentImage, setCurrentImage] = useState(0);
         </div>
       </section>
 
-  
+
 
     </div>
   );

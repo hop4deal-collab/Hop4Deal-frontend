@@ -153,7 +153,7 @@ const MainApp = () => {
     <h4 className="text-lg font-semibold mb-4 text-purple-100">Connect with Us</h4>
     <div className="flex items-center gap-4">
       <a
-        href="https://facebook.com/yourPageHere"
+        href="https://www.facebook.com/share/1CU9j3vaXw/?mibextid=wwXIfr"
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Facebook"
