@@ -278,7 +278,169 @@ class AdminDeals extends Component {
                   {editingDeal ? 'Edit Deal' : 'Add New Deal'}
                 </h3>
                 <form onSubmit={this.handleSubmit} className="space-y-4">
-                  {/* ... rest of modal code stays unchanged ... */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Brand
+                    </label>
+                    <select
+                      name="brand"
+                      value={formData.brand}
+                      onChange={this.handleInputChange}
+                      required
+                      className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                    >
+                      <option value="">Select a brand</option>
+                      {brands.map((brand) => (
+                        <option key={brand._id} value={brand._id}>
+                          {brand.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+    <label className="block text-sm font-medium text-gray-700">Redirect Link</label>
+    <input
+      type="url"
+      name="link"
+      value={formData.link}
+      onChange={this.handleInputChange}
+      placeholder="https://example.com"
+      required
+      className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+    />
+  </div>
+
+                   <div>
+    <label className="block text-sm font-medium text-gray-700">Type</label>
+    <div className="flex space-x-4 mt-1">
+      <label className="flex items-center space-x-2">
+        <input
+          type="radio"
+          name="type"
+          value="deal"
+          checked={formData.type === "deal" || !formData.type}
+          onChange={this.handleInputChange}
+          className="text-primary-500 focus:ring-primary-500"
+        />
+        <span>Deal</span>
+      </label>
+      <label className="flex items-center space-x-2">
+        <input
+          type="radio"
+          name="type"
+          value="offer"
+          checked={formData.type === "offer"}
+          onChange={this.handleInputChange}
+          className="text-primary-500 focus:ring-primary-500"
+        />
+        <span>Offer</span>
+      </label>
+    </div>
+  </div>
+{formData.type !== "offer" && <>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700">
+                        Start Date
+                      </label>
+                      <input
+                        type="date"
+                        name="startDate"
+                        value={formData.startDate}
+                        onChange={this.handleInputChange}
+                        required
+                        className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700">
+                        End Date
+                      </label>
+                      <input
+                        type="date"
+                        name="endDate"
+                        value={formData.endDate}
+                        onChange={this.handleInputChange}
+                        required
+                        className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Deal Code
+                    </label>
+                    <input
+                      type="text"
+                      name="code"
+                      value={formData.code}
+                      onChange={this.handleInputChange}
+                      required
+                      className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                    />
+                  </div>
+
+                 
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Percentage Off
+                    </label>
+                    <input
+                      type="number"
+                      name="percentOff"
+                      value={formData.percentOff}
+                      onChange={this.handleInputChange}
+                      required
+                      min="0"
+                      max="100"
+                      className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                    />
+                  </div>
+
+                  <div className="flex items-center">
+                    <input
+                      type="checkbox"
+                      name="isHot"
+                      checked={formData.isHot}
+                      onChange={this.handleInputChange}
+                      className="rounded border-gray-300 text-primary-600 focus:ring-primary-500"
+                    />
+                    <label className="ml-2 text-sm text-gray-700">
+                      Mark as Hot Deal
+                    </label>
+                  </div>
+</>}
+                   <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Description
+                    </label>
+                    <textarea
+                      name="description"
+                      value={formData.description}
+                      onChange={this.handleInputChange}
+                      required
+                      rows={3}
+                      className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                    />
+                  </div>
+
+                  <div className="flex justify-end space-x-3 pt-4">
+                    <button
+                      type="button"
+                      onClick={this.closeModal}
+                      className="btn-secondary"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      className="btn-primary"
+                    >
+                      {editingDeal ? 'Update' : 'Create'}
+                    </button>
+                  </div>
                 </form>
               </div>
             </div>

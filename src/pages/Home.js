@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import '@fortawesome/fontawesome-free/css/all.min.css'
+import GrabCodeButton from './GrabButton';
+import banner from '../assets/banner.png';
 import { dealsAPI, brandsAPI, blogsAPI, categoriesAPI } from '../services/api';
 
 // NOTE: This component assumes TailwindCSS is configured and Framer Motion is installed.
@@ -85,6 +87,13 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-purple-50 overflow-x-hidden">
       {/* scoped styles for gradient animation & blobs */}
+      <section className="w-full">
+  <img
+    src={banner}
+    alt="Hop4Deals Banner"
+    className="w-full h-[320px] md:h-[470px] object-cover rounded-b-3xl shadow-md"
+  />
+</section>
       <style>{`
         @keyframes gradientShift { 0% { background-position: 0% 50% } 50% { background-position: 100% 50% } 100% { background-position: 0% 50% } }
         .animate-gradient { background-size: 200% 200%; animation: gradientShift 8s ease infinite; }
@@ -174,37 +183,57 @@ export default function Home() {
             <div className="hidden lg:block">
               <div className="relative">
                 <motion.div
-                  initial={{ opacity: 0, scale: 0.95, y: 20 }}
-                  animate={{ opacity: 1, scale: 1, y: 0 }}
-                  transition={{ delay: 0.35 }}
-                  className="grid grid-cols-1 gap-6"
-                >
-                  {hotDeals.slice(0, 3).map((d, i) => (
-                    <motion.div
-                      key={d._id || i}
-                      whileHover={{ translateY: -8 }}
-                      className="bg-white/90 rounded-3xl p-6 shadow-2xl border border-white/30 backdrop-blur"
-                    >
-                      <div className="flex items-start justify-between gap-4">
-                        <div>
-                          {d.type !== 'offer' && <div className="text-xs inline-block font-semibold px-3 py-1 rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 text-white">{d.percentOff}% OFF</div>}
-                          <h3 className="mt-3 text-lg font-bold text-purple-800">{d.brand?.name || 'Top Brand'}</h3>
-                          {d.type == 'offer' && <div className="text-xs inline-block font-semibold px-3 py-1 rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 text-white">OFFER</div>}
-                          <p className="text-sm text-gray-600 mt-2">{d.description?.slice(0, 90) || 'Exclusive offer'}</p>
-                        </div>
-                        {d.type !== 'offer' && <div className="text-right">
-                          <div className="text-xs text-gray-400">Ends</div>
-                          <div className="font-mono font-bold text-sm text-purple-700">{d.endDate ? new Date(d.endDate).toLocaleDateString() : '—'}</div>
-                        </div>}
-                      </div>
+  initial={{ opacity: 0, scale: 0.95, y: 20 }}
+  animate={{ opacity: 1, scale: 1, y: 0 }}
+  transition={{ delay: 0.35 }}
+  className="grid grid-cols-1 gap-6"
+>
+  {hotDeals.slice(0, 3).map((d, i) => (
+    <motion.div
+      key={d._id || i}
+       onClick={() => {
+      if (d.type === "offer") window.open(d.link, "_blank");
+    }}
+      whileHover={{ translateY: -8 }}
+      className="bg-white/90 rounded-3xl p-6 shadow-2xl border border-white/30 backdrop-blur"
+    >
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          {d.type !== "offer" && (
+            <div className="text-xs inline-block font-semibold px-3 py-1 rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 text-white">
+              {d.percentOff}% OFF
+            </div>
+          )}
+          <h3 className="mt-3 text-lg font-bold text-purple-800">
+            {d.brand?.name || "Top Brand"}
+          </h3>
+          {d.type === "offer" && (
+            <div className="text-xs inline-block font-semibold px-3 py-1 rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 text-white">
+              OFFER
+            </div>
+          )}
+          <p className="text-sm text-gray-600 mt-2">
+            {d.description?.slice(0, 90) || "Exclusive offer"}
+          </p>
+        </div>
 
-                      <div className="mt-4 flex items-center justify-between gap-3">
-                        <button onClick={() => window.open(d.link, '_blank')} className="px-4 py-2 rounded-xl bg-purple-600 text-white font-semibold">{d.type !== 'offer' ? 'Grab code' : 'Get Offer'}</button>
-                        {d.type !== 'offer' && <div className="text-sm text-gray-500">Code: <span className="font-mono text-purple-700">{d.code || '—'}</span></div>}
-                      </div>
-                    </motion.div>
-                  ))}
-                </motion.div>
+        {d.type !== "offer" && (
+          <div className="text-right">
+            <div className="text-xs text-gray-400">Ends</div>
+            <div className="font-mono font-bold text-sm text-purple-700">
+              {d.endDate ? new Date(d.endDate).toLocaleDateString() : "—"}
+            </div>
+          </div>
+        )}
+      </div>
+
+      <div className="mt-4 flex items-center justify-between gap-3">
+       <GrabCodeButton code={d.code} link={d.link} type={d.type} />
+      </div>
+    </motion.div>
+  ))}
+</motion.div>
+
 
                 {/* small floating accent */}
                 <div className="absolute -right-12 top-8 w-40 h-40 opacity-30">
@@ -354,7 +383,7 @@ export default function Home() {
           <p className="text-gray-600 mt-2">Real users, real savings</p>
 
           <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
-            {[{name:'Ayesha', text:'Saved 40% on a laptop — the code worked instantly.'},{name:'Omar', text:'Fast site, legit brands.'},{name:'Zara', text:'Great curated deals. Highly recommend.'}].map((r,i)=>(
+            {[{name:'Praggy', text:'Saved 40% on a laptop — the code worked instantly.'},{name:'Jonathon', text:'Fast site, legit brands.'},{name:'Stacy', text:'Great curated deals. Highly recommend.'}].map((r,i)=>(
               <motion.div key={i} whileHover={{ scale: 1.03 }} className="bg-white p-6 rounded-2xl shadow-md">
                 <p className="text-gray-700 italic">"{r.text}"</p>
                 <div className="mt-4 font-semibold text-purple-800">— {r.name}</div>
@@ -373,68 +402,65 @@ export default function Home() {
   </div>
 
   <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+   <div className="grid grid-cols-4 gap-10 items-start">
 
-      {/* Brand + description */}
-      <div>
-        <div className="text-2xl font-extrabold tracking-tight">Hop4Deals</div>
-        <p className="text-sm text-purple-200 mt-3 max-w-sm leading-relaxed">
-          Discover verified discounts, exclusive brand coupons, and flash deals — all curated daily so you can save more, faster.
-        </p>
-      </div>
+  {/* Brand + description */}
+  <div>
+    <div className="text-2xl font-extrabold tracking-tight">Hop4Deals</div>
+    <p className="text-sm text-purple-200 mt-3 max-w-sm leading-relaxed">
+      Discover verified discounts, exclusive brand coupons, and flash deals — all curated daily so you can save more, faster.
+    </p>
+  </div>
 
-      {/* Quick links */}
-      <div>
-        <h4 className="text-lg font-semibold mb-4 text-purple-100">Quick Links</h4>
-        <ul className="space-y-2 text-sm text-purple-200">
-          <li><Link to="/about" className="hover:text-white hover:translate-x-1 inline-block transition">About</Link></li>
-          <li><Link to="/contact" className="hover:text-white hover:translate-x-1 inline-block transition">Contact</Link></li>
-          <li><Link to="/privacy-policy" className="hover:text-white hover:translate-x-1 inline-block transition">Privacy Policy</Link></li>
-          <li><Link to="/cookie-policy" className="hover:text-white hover:translate-x-1 inline-block transition">Cookie Policy</Link></li>
-          <li><Link to="/imprint" className="hover:text-white hover:translate-x-1 inline-block transition">Imprint</Link></li>
-          <li><Link to="/feedback" className="hover:text-white hover:translate-x-1 inline-block transition">Feedback</Link></li>
-        </ul>
-      </div>
+  {/* Quick links */}
+  <div>
+    <h4 className="text-lg font-semibold mb-4 text-purple-100">Quick Links</h4>
+    <ul className="space-y-2 text-sm text-purple-200">
+      <li><Link to="/aboutus" className="hover:text-white hover:translate-x-1 inline-block transition">About</Link></li>
+      <li><Link to="/privacy-policy" className="hover:text-white hover:translate-x-1 inline-block transition">Privacy Policy</Link></li>
+      <li><Link to="/cookie-policy" className="hover:text-white hover:translate-x-1 inline-block transition">Cookie Policy</Link></li>
+      <li><Link to="/imprint" className="hover:text-white hover:translate-x-1 inline-block transition">Imprint</Link></li>
+    </ul>
+  </div>
 
-      {/* Social media */}
-      <div>
-        <h4 className="text-lg font-semibold mb-4 text-purple-100">Connect with Us</h4>
-        <div className="flex items-center gap-4">
-          {/* WhatsApp */}
-          <a
-            href="https://wa.me/yourNumberHere"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="WhatsApp"
-            className="p-3 bg-white/10 hover:bg-white/20 rounded-full backdrop-blur transition flex items-center justify-center"
-          >
-            <i className="fab fa-whatsapp text-2xl text-green-400 drop-shadow"></i>
-          </a>
+  {/* Explore */}
+  <div>
+    <h4 className="text-lg font-semibold mb-4 text-purple-100">Explore</h4>
+    <ul className="space-y-2 text-sm text-purple-200">
+      <li><Link to="/home" className="hover:text-white hover:translate-x-1 inline-block transition">Home</Link></li>
+      <li><Link to="/brands" className="hover:text-white hover:translate-x-1 inline-block transition">Brands</Link></li>
+      <li><Link to="/categories" className="hover:text-white hover:translate-x-1 inline-block transition">Categories</Link></li>
+      <li><Link to="/deals" className="hover:text-white hover:translate-x-1 inline-block transition">Deals</Link></li>
+      <li><Link to="/blogs" className="hover:text-white hover:translate-x-1 inline-block transition">Blogs</Link></li>
+    </ul>
+  </div>
 
-          {/* Facebook */}
-          <a
-            href="https://facebook.com/yourPageHere"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Facebook"
-            className="p-3 bg-white/10 hover:bg-white/20 rounded-full backdrop-blur transition flex items-center justify-center"
-          >
-            <i className="fab fa-facebook-f text-2xl text-blue-400 drop-shadow"></i>
-          </a>
-
-          {/* Instagram */}
-          <a
-            href="https://instagram.com/yourProfileHere"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Instagram"
-            className="p-3 bg-white/10 hover:bg-white/20 rounded-full backdrop-blur transition flex items-center justify-center"
-          >
-            <i className="fab fa-instagram text-2xl text-pink-400 drop-shadow"></i>
-          </a>
-        </div>
-      </div>
+  {/* Social media */}
+  <div>
+    <h4 className="text-lg font-semibold mb-4 text-purple-100">Connect with Us</h4>
+    <div className="flex items-center gap-4">
+      <a
+        href="https://facebook.com/yourPageHere"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Facebook"
+        className="p-3 bg-white/10 hover:bg-white/20 rounded-full backdrop-blur transition flex items-center justify-center"
+      >
+        <i className="fab fa-facebook-f text-2xl text-blue-400 drop-shadow"></i>
+      </a>
+      <a
+        href="https://instagram.com/yourProfileHere"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Instagram"
+        className="p-3 bg-white/10 hover:bg-white/20 rounded-full backdrop-blur transition flex items-center justify-center"
+      >
+        <i className="fab fa-instagram text-2xl text-pink-400 drop-shadow"></i>
+      </a>
     </div>
+  </div>
+</div>
+
 
     {/* Divider */}
     <div className="mt-10 border-t border-purple-700/50"></div>

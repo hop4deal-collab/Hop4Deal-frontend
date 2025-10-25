@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
-
+import brandLogo from "../assets/brandLogo.png";
 class Navbar extends Component {
   static contextType = AuthContext;
 
@@ -34,7 +34,11 @@ class Navbar extends Component {
             {/* LEFT SIDE — Logo + Links */}
             <div className="flex items-center space-x-8">
               <Link to="/" className="text-2xl font-bold text-primary-600">
-                Hop4Deals
+               <img
+          src={brandLogo}
+          alt="Hop4Deals"
+          style={{height: 102}}
+        />
               </Link>
 
               {/* Desktop Menu Links */}

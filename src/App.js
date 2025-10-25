@@ -15,6 +15,10 @@ import BrandsPage from './pages/BrandsPage';
 import AdminDashboard from './pages/AdminDashboard';
 import UserDashboard from './pages/UserDashboard';
 import BrandDetailsPage from './pages/BrandDetailPage';
+import AboutUs from './pages/AboutUs';
+import PrivacyPolicy from './pages/PrivatePolicy';
+import CookiePolicy from './pages/CookiePolicy';
+import Imprint from './pages/legalDisclosure';
 
 // Components
 import Navbar from './components/Navbar';
@@ -67,6 +71,10 @@ const MainApp = () => {
             <Route path="/" element={<Home />} />
             <Route path="/896552147/login" element={<LoginRoute />} />
             <Route path="/deals" element={<DealsPage />} />
+             <Route path="/aboutus" element={<AboutUs />} />
+              <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+               <Route path="/cookie-policy" element={<CookiePolicy />} />
+                <Route path="/imprint" element={<Imprint />} />
             <Route path="/categories" element={<CategoriesPage />} />
             <Route path="/blogs" element={<BlogsPage />} />
             <Route path="/brands" element={<BrandsPage />} />

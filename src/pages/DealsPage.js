@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import { dealsAPI, brandsAPI, categoriesAPI } from '../services/api';
 import { motion } from 'framer-motion';
+import  GrabCodeButton  from './GrabButton';
 
 class DealsPage extends Component {
   constructor(props) {
@@ -194,37 +195,48 @@ class DealsPage extends Component {
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-              {deals.map((deal, idx) => (
-                <motion.div
-                  key={deal._id}
-                  onClick={() => window.open(deal.link, '_blank')}
-                  className="cursor-pointer bg-white/90 backdrop-blur-md rounded-xl shadow-lg hover:shadow-2xl border border-transparent hover:border-primary-400 transition-all duration-300"
-                  initial={{ opacity: 0, y: 40 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: idx * 0.15, duration: 0.6 }}
-                  whileHover={{ scale: 1.03 }}
-                >
-                  <div className="p-6">
-                    <div className="flex items-center justify-between mb-4">
-                      { deal.type !== 'offer' &&<span className="px-3 py-1 bg-gradient-to-r from-primary-400 to-purple-500 text-white text-sm font-semibold rounded-full">
-                        {deal.percentOff}% OFF
-                      </span>}
-                       { deal.type == 'offer' &&<span className="px-3 py-1 bg-gradient-to-r from-primary-400 to-purple-500 text-white text-sm font-semibold rounded-full">
-                        OFFER
-                      </span>}
-                      { deal.type !== 'offer' &&<span className="text-sm text-gray-500">
-                        {new Date(deal.endDate).toLocaleDateString()}
-                      </span>}
-                    </div>
-                    <h3 className="text-lg font-semibold text-primary-700 mb-2">{deal.brand?.name}</h3>
-                    <p className="text-gray-700 mb-4">{deal.description}</p>
-                    { deal.type !== 'offer' && <div className="bg-gradient-to-r from-primary-50 to-purple-50 p-3 rounded-lg">
-                      <p className="text-sm text-gray-600 mb-1">Use Code:</p>
-                      <p className="font-mono text-lg font-bold text-primary-700">{deal.code}</p>
-                    </div>}
-                  </div>
-                </motion.div>
-              ))}
+             {deals.map((deal, idx) => (
+  <motion.div
+    key={deal._id}
+    onClick={() => {
+      if (deal.type === "offer") window.open(deal.link, "_blank");
+    }}
+    className="cursor-pointer bg-white/90 backdrop-blur-md rounded-xl shadow-lg hover:shadow-2xl border border-transparent hover:border-primary-400 transition-all duration-300"
+    initial={{ opacity: 0, y: 40 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ delay: idx * 0.15, duration: 0.6 }}
+    whileHover={{ scale: 1.03 }}
+  >
+    <div className="p-6">
+      <div className="flex items-center justify-between mb-4">
+        {deal.type !== 'offer' ? (
+          <span className="px-3 py-1 bg-gradient-to-r from-primary-400 to-purple-500 text-white text-sm font-semibold rounded-full">
+            {deal.percentOff}% OFF
+          </span>
+        ) : (
+          <span className="px-3 py-1 bg-gradient-to-r from-primary-400 to-purple-500 text-white text-sm font-semibold rounded-full">
+            OFFER
+          </span>
+        )}
+        {deal.type !== 'offer' && (
+          <span className="text-sm text-gray-500">
+            {new Date(deal.endDate).toLocaleDateString()}
+          </span>
+        )}
+      </div>
+
+      <h3 className="text-lg font-semibold text-primary-700 mb-2">{deal.brand?.name}</h3>
+      <p className="text-gray-700 mb-4">{deal.description}</p>
+
+      {deal.type !== 'offer' && (
+        <div className="bg-gradient-to-r from-primary-50 to-purple-50 p-3 rounded-lg text-center">
+          <GrabCodeButton code={deal.code} link={deal.link} type={deal.type} />
+        </div>
+      )}
+    </div>
+  </motion.div>
+))}
+
             </div>
           )}
         </div>
