@@ -5,7 +5,10 @@ import '@fortawesome/fontawesome-free/css/all.min.css'
 import GrabCodeButton from './GrabButton';
 import banner from '../assets/banner.png';
 import { dealsAPI, brandsAPI, blogsAPI, categoriesAPI } from '../services/api';
-
+const importAll = (r) => r.keys().map(r);
+const popupImages = importAll(
+  require.context('../assets/promotionalBanner', false, /\.(png|jpe?g|webp|gif)$/)
+);
 // NOTE: This component assumes TailwindCSS is configured and Framer Motion is installed.
 // It also injects a small set of scoped styles (keyframes) for animated gradients & blobs.
 
@@ -17,9 +20,13 @@ export default function Home() {
   const [categoryBrands, setCategoryBrands] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [showPopup, setShowPopup] = useState(false);
+const [currentImage, setCurrentImage] = useState(0);
+
 
   useEffect(() => {
     loadData();
+     if (popupImages.length > 0) setTimeout(() => setShowPopup(true), 800);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -102,6 +109,64 @@ export default function Home() {
         @keyframes floaty { 0% { transform: translateY(0px) } 50% { transform: translateY(-12px) } 100% { transform: translateY(0px) } }
         .floaty { animation: floaty 6s ease-in-out infinite; }
       `}</style>
+       
+
+       {showPopup && (
+  <div
+    className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 px-4"
+    onClick={() => setShowPopup(false)}
+  >
+    <motion.div
+      onClick={(e) => e.stopPropagation()}
+      initial={{ scale: 0.9, opacity: 0 }}
+      animate={{ scale: 1, opacity: 1 }}
+      exit={{ scale: 0.9, opacity: 0 }}
+      className="relative bg-white rounded-3xl shadow-2xl overflow-hidden max-w-3xl w-full"
+    >
+      <img
+        src={popupImages[currentImage]}
+        alt={`Promo ${currentImage + 1}`}
+        className="w-full h-[60vh] object-contain bg-black"
+      />
+
+      {/* Navigation */}
+      {popupImages.length > 1 && (
+        <>
+          <button
+            onClick={() =>
+              setCurrentImage((prev) =>
+                prev === 0 ? popupImages.length - 1 : prev - 1
+              )
+            }
+            className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/70 hover:bg-white text-purple-700 p-2 rounded-full shadow"
+          >
+            ❮
+          </button>
+
+          <button
+            onClick={() =>
+              setCurrentImage((prev) =>
+                prev === popupImages.length - 1 ? 0 : prev + 1
+              )
+            }
+            className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/70 hover:bg-white text-purple-700 p-2 rounded-full shadow"
+          >
+            ❯
+          </button>
+        </>
+      )}
+
+      {/* Close Button */}
+      <button
+        onClick={() => setShowPopup(false)}
+        className="absolute top-3 right-3 bg-white/80 hover:bg-white text-purple-700 font-bold rounded-full w-8 h-8 flex items-center justify-center shadow"
+      >
+        ✕
+      </button>
+    </motion.div>
+  </div>
+)}
+
 
       {/* HERO */}
       <section className="relative overflow-hidden">
