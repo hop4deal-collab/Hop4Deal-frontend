@@ -87,12 +87,14 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-purple-50 overflow-x-hidden">
       {/* scoped styles for gradient animation & blobs */}
-      <section className="w-full">
-  <img
-    src={banner}
-    alt="Hop4Deals Banner"
-    className="w-full h-[320px] md:h-[470px] object-cover rounded-b-3xl shadow-md"
-  />
+ <section className="relative w-full overflow-x-hidden">
+  <div className="relative w-full overflow-hidden rounded-b-3xl shadow-md">
+    <img
+      src={banner}
+      alt="Hop4Deals Banner"
+      className="block w-full h-[200px] sm:h-[300px] md:h-[470px] object-cover"
+    />
+  </div>
 </section>
       <style>{`
         @keyframes gradientShift { 0% { background-position: 0% 50% } 50% { background-position: 100% 50% } 100% { background-position: 0% 50% } }
@@ -264,7 +266,7 @@ export default function Home() {
             </div>
           </div>
         </div>
-      </section>
+      </section> 
 
       {/* CATEGORIES */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
@@ -325,36 +327,96 @@ export default function Home() {
       </section>
 
       {/* Trending brands (horizontal marquee) */}
-      <section className="py-8 bg-white/60">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between mb-6">
-            <h3 className="text-lg font-semibold text-purple-800">Trending Brands</h3>
-            <Link to="/brands" className="text-purple-700 font-medium">All brands</Link>
-          </div>
+      <section className="py-8 bg-white/60 overflow-hidden">
+  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="flex items-center justify-between mb-6">
+      <h3 className="text-lg font-semibold text-purple-800">Trending Brands</h3>
+      <Link to="/brands" className="text-purple-700 font-medium">
+        All brands
+      </Link>
+    </div>
 
-          <div className="overflow-hidden">
-            <div className="flex gap-6 animate-[marquee_18s_linear_infinite] whitespace-nowrap">
-              {trendingBrands.concat(trendingBrands).map((b, i) => (
-                <Link key={`${b._id}-${i}`} to={`/deals?brand=${b._id}`} className="inline-flex items-center gap-3 bg-white p-3 rounded-2xl shadow-sm border border-gray-100 mr-4 min-w-[160px]">
-                  <div className="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center overflow-hidden">
-                    {b.logo ? <img
-                     src={b.logo ? (b.logo?.startsWith('/upload') ? `${process.env.REACT_APP_API_URL.slice(0, -4)}${b.logo}` : null) : null}
-                      alt={b.name} className="w-full h-full object-cover" /> : b.name?.charAt(0)}
-                  </div>
-                  <div className="text-left">
-                    <div className="font-semibold text-purple-800">{b.name}</div>
-                    <div className="text-xs text-gray-500">{b.tagline || ''}</div>
-                  </div>
-                </Link>
-              ))}
+    {/* ✅ Show marquee only on md+ screens */}
+    <div className="relative w-full overflow-hidden hidden md:block">
+      <div className="flex gap-6 whitespace-nowrap animate-marquee will-change-transform">
+        {trendingBrands.concat(trendingBrands).map((b, i) => (
+          <Link
+            key={`${b._id}-${i}`}
+            to={`/deals?brand=${b._id}`}
+            className="inline-flex items-center gap-3 bg-white p-3 rounded-2xl shadow-sm border border-gray-100 min-w-[160px] flex-shrink-0"
+          >
+            <div className="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center overflow-hidden">
+              {b.logo ? (
+                <img
+                  src={
+                    b.logo?.startsWith('/upload')
+                      ? `${process.env.REACT_APP_API_URL.slice(0, -4)}${b.logo}`
+                      : b.logo
+                  }
+                  alt={b.name}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                b.name?.charAt(0)
+              )}
             </div>
+            <div className="text-left">
+              <div className="font-semibold text-purple-800">{b.name}</div>
+              <div className="text-xs text-gray-500">{b.tagline || ''}</div>
+            </div>
+          </Link>
+        ))}
+      </div>
+    </div>
+
+    {/* ✅ Simple grid for mobile */}
+    <div className="grid grid-cols-2 gap-4 md:hidden">
+      {trendingBrands.slice(0, 6).map((b) => (
+        <Link
+          key={b._id}
+          to={`/deals?brand=${b._id}`}
+          className="flex items-center gap-3 bg-white p-3 rounded-xl shadow-sm border border-gray-100"
+        >
+          <div className="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center overflow-hidden">
+            {b.logo ? (
+              <img
+                src={
+                  b.logo?.startsWith('/upload')
+                    ? `${process.env.REACT_APP_API_URL.slice(0, -4)}${b.logo}`
+                    : b.logo
+                }
+                alt={b.name}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              b.name?.charAt(0)
+            )}
           </div>
+          <div className="text-left">
+            <div className="font-semibold text-purple-800 text-sm">{b.name}</div>
+            <div className="text-xs text-gray-500">{b.tagline || ''}</div>
+          </div>
+        </Link>
+      ))}
+    </div>
+  </div>
 
-          {/* marquee keyframes */}
-          <style>{`@keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}} .animate-\[marquee_18s_linear_infinite\]{animation:marquee 18s linear infinite;}`}</style>
-        </div>
-      </section>
+  {/* Animation */}
+  <style>{`
+    @keyframes marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    .animate-marquee {
+      display: inline-flex;
+      animation: marquee 20s linear infinite;
+    }
+  `}</style>
+</section>
 
+
+
+     
       {/* Featured blogs */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="flex items-center justify-between mb-6">
@@ -393,85 +455,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-gradient-to-br from-purple-900 via-indigo-900 to-purple-800 text-white mt-12 relative overflow-hidden">
-  {/* subtle glow background */}
-  <div className="absolute inset-0 opacity-10">
-    <div className="absolute top-0 left-1/3 w-64 h-64 bg-purple-400 rounded-full blur-3xl" />
-    <div className="absolute bottom-0 right-1/4 w-64 h-64 bg-indigo-500 rounded-full blur-3xl" />
-  </div>
-
-  <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-   <div className="grid grid-cols-4 gap-10 items-start">
-
-  {/* Brand + description */}
-  <div>
-    <div className="text-2xl font-extrabold tracking-tight">Hop4Deals</div>
-    <p className="text-sm text-purple-200 mt-3 max-w-sm leading-relaxed">
-      Discover verified discounts, exclusive brand coupons, and flash deals — all curated daily so you can save more, faster.
-    </p>
-  </div>
-
-  {/* Quick links */}
-  <div>
-    <h4 className="text-lg font-semibold mb-4 text-purple-100">Quick Links</h4>
-    <ul className="space-y-2 text-sm text-purple-200">
-      <li><Link to="/aboutus" className="hover:text-white hover:translate-x-1 inline-block transition">About</Link></li>
-      <li><Link to="/privacy-policy" className="hover:text-white hover:translate-x-1 inline-block transition">Privacy Policy</Link></li>
-      <li><Link to="/cookie-policy" className="hover:text-white hover:translate-x-1 inline-block transition">Cookie Policy</Link></li>
-      <li><Link to="/imprint" className="hover:text-white hover:translate-x-1 inline-block transition">Imprint</Link></li>
-    </ul>
-  </div>
-
-  {/* Explore */}
-  <div>
-    <h4 className="text-lg font-semibold mb-4 text-purple-100">Explore</h4>
-    <ul className="space-y-2 text-sm text-purple-200">
-      <li><Link to="/home" className="hover:text-white hover:translate-x-1 inline-block transition">Home</Link></li>
-      <li><Link to="/brands" className="hover:text-white hover:translate-x-1 inline-block transition">Brands</Link></li>
-      <li><Link to="/categories" className="hover:text-white hover:translate-x-1 inline-block transition">Categories</Link></li>
-      <li><Link to="/deals" className="hover:text-white hover:translate-x-1 inline-block transition">Deals</Link></li>
-      <li><Link to="/blogs" className="hover:text-white hover:translate-x-1 inline-block transition">Blogs</Link></li>
-    </ul>
-  </div>
-
-  {/* Social media */}
-  <div>
-    <h4 className="text-lg font-semibold mb-4 text-purple-100">Connect with Us</h4>
-    <div className="flex items-center gap-4">
-      <a
-        href="https://facebook.com/yourPageHere"
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label="Facebook"
-        className="p-3 bg-white/10 hover:bg-white/20 rounded-full backdrop-blur transition flex items-center justify-center"
-      >
-        <i className="fab fa-facebook-f text-2xl text-blue-400 drop-shadow"></i>
-      </a>
-      <a
-        href="https://instagram.com/yourProfileHere"
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label="Instagram"
-        className="p-3 bg-white/10 hover:bg-white/20 rounded-full backdrop-blur transition flex items-center justify-center"
-      >
-        <i className="fab fa-instagram text-2xl text-pink-400 drop-shadow"></i>
-      </a>
-    </div>
-  </div>
-</div>
-
-
-    {/* Divider */}
-    <div className="mt-10 border-t border-purple-700/50"></div>
-
-    {/* Bottom row */}
-    <div className="mt-6 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-purple-300">
-      <p>© {new Date().getFullYear()} <span className="font-semibold text-purple-100">Hop4Deals</span>. All rights reserved.</p>
-      
-    </div>
-  </div>
-</footer>
+  
 
     </div>
   );
