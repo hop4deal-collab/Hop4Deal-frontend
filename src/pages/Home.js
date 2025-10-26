@@ -350,7 +350,7 @@ export default function Home() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {categories.map((cat, idx) => (
+          {categories.slice(0,3)?.map((cat, idx) => (
             <motion.div
               key={cat._id || idx}
               custom={idx}

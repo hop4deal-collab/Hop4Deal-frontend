@@ -105,7 +105,7 @@ class AdminDeals extends Component {
     this.setState({
       editingDeal: deal,
       formData: {
-        brand: deal.brand._id,
+        brand: deal.brand?._id,
         type:deal.type,
         link: deal.link,
         startDate: new Date(deal.startDate)?.toISOString()?.split('T')[0],
