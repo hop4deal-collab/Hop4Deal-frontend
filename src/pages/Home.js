@@ -264,9 +264,9 @@ export default function Home() {
                   {hotDeals.slice(0, 3).map((d, i) => (
                     <motion.div
                       key={d._id || i}
-                      onClick={() => {
-                        if (d.type === "offer") window.open(d.link, "_blank");
-                      }}
+                      // onClick={() => {
+                      //   if (d.type === "offer") window.open(d.link, "_blank");
+                      // }}
                       whileHover={{ translateY: -8 }}
                       className="bg-white/90 rounded-3xl p-6 shadow-2xl border border-white/30 backdrop-blur"
                     >

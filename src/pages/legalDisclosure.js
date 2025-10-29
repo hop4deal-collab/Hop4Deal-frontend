@@ -34,11 +34,11 @@ const Imprint = () => {
               <p><strong>Registered Address:</strong> California, United States</p>
               <p>
                 <strong>Contact Email:</strong>{" "}
-                <a href="mailto:contact@hop4deal.com" className="text-purple-700 underline">
-                  contact@hop4deal.com
+                <a href="mailto:admin@hop4deal.com" className="text-purple-700 underline">
+                  admin@hop4deal.com
                 </a>
               </p>
-              <p><strong>Telephone:</strong> N/A</p>
+             
             </div>
           </div>
 
@@ -48,21 +48,13 @@ const Imprint = () => {
               <strong>Representative:</strong> Hop4Deals Team<br />
               <strong>Address:</strong> California, United States<br />
               <strong>Email:</strong>{" "}
-              <a href="mailto:contact@hop4deal.com" className="text-purple-700 underline">
-                contact@hop4deal.com
+              <a href="mailto:admin@hop4deal.com" className="text-purple-700 underline">
+                admin@hop4deal.com
               </a>
             </p>
           </div>
 
-          <div>
-            <h2 className="text-2xl font-semibold text-purple-600 mb-3">Company Information</h2>
-            <p className="leading-relaxed">
-              <strong>Legal Form:</strong> Independent Digital Platform<br />
-              <strong>Registration Court / Trade Register:</strong> Not applicable<br />
-              <strong>Company Registration Number:</strong> N/A<br />
-              <strong>VAT ID:</strong> N/A
-            </p>
-          </div>
+          
 
           <div>
             <h2 className="text-2xl font-semibold text-purple-600 mb-3">Disclaimer</h2>
@@ -109,8 +101,8 @@ const Imprint = () => {
             </p>
             <p className="mt-3">
               📧{" "}
-              <a href="mailto:contact@hop4deal.com" className="text-purple-700 underline">
-                contact@hop4deal.com
+              <a href="mailto:admin@hop4deal.com" className="text-purple-700 underline">
+                admin@hop4deal.com
               </a>
               <br />
               📍 California, United States<br />

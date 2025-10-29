@@ -157,10 +157,10 @@ const PrivacyPolicy = () => {
             <p className="mt-3 text-gray-700">
               To exercise your rights, contact us at{" "}
               <a
-                href="mailto:contact@hop4deal.com"
+                href="mailto:admin@hop4deal.com"
                 className="text-purple-700 underline font-semibold hover:text-purple-500"
               >
-                contact@hop4deal.com
+                admin@hop4deal.com
               </a>
               .
             </p>
@@ -200,10 +200,10 @@ const PrivacyPolicy = () => {
               <li>
                 📧 Email:{" "}
                 <a
-                  href="mailto:contact@hop4deal.com"
+                  href="mailto:admin@hop4deal.com"
                   className="text-purple-700 underline font-semibold hover:text-purple-500"
                 >
-                  contact@hop4deal.com
+                  admin@hop4deal.com
                 </a>
               </li>
               <li>

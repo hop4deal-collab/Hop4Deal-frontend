@@ -125,10 +125,10 @@ const AboutPage = () => {
               collaborate? We’d love to hear from you!  
               Reach out via{" "}
               <a
-                href="mailto:contact@hop4deal.com"
+                href="mailto:admin@hop4deal.com"
                 className="text-purple-700 font-semibold underline hover:text-purple-500"
               >
-                hop4deal@gmail.com
+                admin@hop4deal.com
               </a>{" "}
               or connect with us on social media.
             </p>

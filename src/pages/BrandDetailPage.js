@@ -3,6 +3,7 @@ import React, { Component } from "react";
 import { brandsAPI, dealsAPI } from "../services/api";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
+import  GrabCodeButton  from './GrabButton';
 
 /*
   BrandDetailsPage (Side-by-side layout)
@@ -222,7 +223,7 @@ export default class BrandDetailsPage extends Component {
                 ) : (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {activeDeals.map((d, i) => (
-                      <motion.article key={d._id} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.06 }} className="bg-white rounded-lg p-4 shadow-sm border hover:shadow-lg hover:border-primary-400 transition cursor-pointer" onClick={() => window.open(d.link, "_blank")}>
+                      <motion.article key={d._id} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.06 }} className="bg-white rounded-lg p-4 shadow-sm border hover:shadow-lg hover:border-primary-400 transition cursor-pointer" >
                         <div className="flex items-start justify-between gap-3">
                           <div>
                             <div className="inline-block px-3 py-1 rounded-full text-white font-semibold text-sm bg-gradient-to-r from-primary-400 to-primary-600">
@@ -237,10 +238,11 @@ export default class BrandDetailsPage extends Component {
                           </div>
                         </div>
 
-                        <div className="mt-3 flex items-center justify-between gap-3">
-                          <div className="bg-gray-50 px-3 py-2 rounded text-xs text-gray-600">Code: <span className="font-mono text-primary-700 ml-2">{d.code || "—"}</span></div>
-                          <button onClick={(e) => { e.stopPropagation(); window.open(d.link, "_blank"); }} className="px-3 py-2 rounded bg-gradient-to-r from-primary-500 to-purple-600 text-white font-semibold">Use Deal</button>
+                        <div className="bg-gradient-to-r from-primary-50 to-purple-50 p-3 rounded-lg text-center">
+                          <GrabCodeButton code={d.code} link={d.link} type={d.type} />
                         </div>
+
+                       
                       </motion.article>
                     ))}
                   </div>

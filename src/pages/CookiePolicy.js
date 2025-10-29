@@ -114,10 +114,10 @@ const CookiePolicy = () => {
             <p className="leading-relaxed">
               Questions about cookies or this policy? Email us at{" "}
               <a
-                href="mailto:contact@hop4deal.com"
+                href="mailto:admin@hop4deal.com"
                 className="text-purple-700 underline hover:text-purple-500"
               >
-                contact@hop4deal.com
+                admin@hop4deal.com
               </a>
               .
             </p>
