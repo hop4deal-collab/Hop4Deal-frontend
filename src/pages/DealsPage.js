@@ -1,6 +1,6 @@
 // src/pages/DealsPage.js
 import React, { Component } from 'react';
-import { dealsAPI, brandsAPI, categoriesAPI } from '../services/api';
+import { dealsAPI, brandsAPI, categoriesAPI ,seasonsAPI } from '../services/api';
 import { motion } from 'framer-motion';
 import  GrabCodeButton  from './GrabButton';
 
@@ -11,38 +11,43 @@ class DealsPage extends Component {
       deals: [],
       brands: [],
       categories: [],
+      seasons: [], 
       filters: {
         brand: '',
         category: '',
         isHot: '',
         type: '', // NEW: Deal or Offer
+          season: '',
       },
       loading: true,
       error: null,
     };
   }
 
-  componentDidMount() {
-    this.loadData();
-    const params = new URLSearchParams(window.location.search);
-    const brand = params.get('brand') || '';
-    if (brand) {
-      this.setState((prev) => ({ filters: { ...prev.filters, brand } }));
-    }
-  }
+ componentDidMount() {
+  this.loadData();
+  const params = new URLSearchParams(window.location.search);
+  const brand = params.get('brand') || '';
+  const season = params.get('season') || ''; // 🆕
+  this.setState((prev) => ({
+    filters: { ...prev.filters, brand, season },
+  }));
+}
 
   loadData = async () => {
     try {
-      const [dealsRes, brandsRes, categoriesRes] = await Promise.all([
+      const [dealsRes, brandsRes, categoriesRes,seasonsRes] = await Promise.all([
         dealsAPI.getAll(),
         brandsAPI.getAll(),
         categoriesAPI.getAll(),
+         seasonsAPI.getAll(),
       ]);
 
       this.setState({
         deals: dealsRes.data,
         brands: brandsRes.data,
         categories: categoriesRes.data,
+         seasons: seasonsRes.data,
         loading: false,
       });
     } catch (error) {
@@ -61,11 +66,12 @@ class DealsPage extends Component {
       const matchBrand = !filters.brand || d.brand?._id === filters.brand;
       const matchHot = filters.isHot === '' || String(d.isHot) === filters.isHot;
       const matchCategory = !filters.category || d.brand?.category?._id === filters.category;
+      const matchSeason = !filters.season || d.season === filters.season;
       const matchType =
         !filters.type ||
         (filters.type === 'deal' && (!d.type || d.type === 'deal')) ||
         (filters.type === 'offer' && d.type === 'offer');
-      return matchBrand && matchCategory && matchHot && matchType;
+      return matchBrand && matchCategory && matchHot && matchType && matchSeason;
     });
   };
 
@@ -156,18 +162,23 @@ class DealsPage extends Component {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Hot</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Season / Event</label>
                 <select
-                  name="isHot"
-                  value={filters.isHot}
+                  name="season"
+                  value={filters.season}
                   onChange={this.handleFilterChange}
                   className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-primary-500 focus:border-primary-500"
                 >
-                  <option value="">All</option>
-                  <option value="true">Hot Only</option>
-                  <option value="false">Not Hot</option>
+                  <option value="">All Seasons</option>
+                  {this.state.seasons.map((s) => (
+                    <option key={s._id} value={s._id}>
+                      {s.name}
+                    </option>
+                  ))}
                 </select>
               </div>
+
+            
 
               {/* 🆕 Type Filter */}
               <div>

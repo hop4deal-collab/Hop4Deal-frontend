@@ -46,6 +46,7 @@ class Navbar extends Component {
                 <Link to="/" className="text-gray-700 hover:text-primary-600 text-sm font-medium">Home</Link>
                 <Link to="/categories" className="text-gray-700 hover:text-primary-600 text-sm font-medium">Categories</Link>
                 <Link to="/brands" className="text-gray-700 hover:text-primary-600 text-sm font-medium">Brands</Link>
+                <Link to="/seasons" className="text-gray-700 hover:text-primary-600 text-sm font-medium">Seasons</Link>
                 <Link to="/deals" className="text-gray-700 hover:text-primary-600 text-sm font-medium">Deals</Link>
                 <Link to="/blogs" className="text-gray-700 hover:text-primary-600 text-sm font-medium">Blogs</Link>
                 {isAuthenticated &&

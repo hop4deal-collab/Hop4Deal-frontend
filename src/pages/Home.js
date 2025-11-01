@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import '@fortawesome/fontawesome-free/css/all.min.css'
 import GrabCodeButton from './GrabButton';
 import banner from '../assets/banner.png';
-import { dealsAPI, brandsAPI, blogsAPI, categoriesAPI } from '../services/api';
+import { dealsAPI, brandsAPI, blogsAPI, categoriesAPI,seasonsAPI } from '../services/api';
 const importAll = (r) => r.keys().map(r);
 const popupImages = importAll(
   require.context('../assets/promotionalBanner', false, /\.(png|jpe?g|webp|gif)$/)
@@ -22,6 +22,9 @@ export default function Home() {
   const [error, setError] = useState(null);
   const [showPopup, setShowPopup] = useState(false);
   const [currentImage, setCurrentImage] = useState(0);
+  const [seasons, setSeasons] = useState([]);
+  const [popupImages, setPopupImages] = useState([]);
+  
 
 
   useEffect(() => {
@@ -30,13 +33,41 @@ export default function Home() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  useEffect(() => {
+  if (!showPopup || popupImages.length <= 1) return;
+
+  const interval = setInterval(() => {
+    setCurrentImage((prev) =>
+      prev === popupImages.length - 1 ? 0 : prev + 1
+    );
+  }, 2000); // change every 4s
+
+  return () => clearInterval(interval);
+}, [showPopup, popupImages]);
+
+  useEffect(() => {
+  const fetchSeasons = async () => {
+    try {
+      const res = await seasonsAPI.getAll();
+      const activeSeasons = res.data.filter(s => s.logo && s.isActive);
+      setSeasons(activeSeasons);
+      setPopupImages(activeSeasons.map(s => s.logo));
+      if (activeSeasons.length > 0) setShowPopup(true);
+    } catch (err) {
+      console.error("Error fetching seasons:", err);
+    }
+  };
+  fetchSeasons();
+}, []);
+
   async function loadData() {
     try {
       const [dealsRes, brandsRes, blogsRes, catsRes] = await Promise.all([
         dealsAPI.getAll(),
         brandsAPI.getAll(),
         blogsAPI.getAll(),
-        categoriesAPI.getAll(),
+        categoriesAPI.getAll()
+
       ]);
 
       const deals = dealsRes.data || [];
@@ -111,61 +142,67 @@ export default function Home() {
       `}</style>
 
 
-      {showPopup && (
-        <div
-          className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 px-2 sm:px-4"
-          onClick={() => setShowPopup(false)}
-        >
-          <motion.div
-            onClick={(e) => e.stopPropagation()}
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0.9, opacity: 0 }}
-            className="relative bg-black rounded-2xl shadow-2xl overflow-hidden w-full max-w-3xl"
+      {showPopup && popupImages.length > 0 && (
+  <div
+    className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 px-2 sm:px-4"
+    onClick={() => setShowPopup(false)}
+  >
+    <motion.div
+      onClick={(e) => e.stopPropagation()}
+      initial={{ scale: 0.9, opacity: 0 }}
+      animate={{ scale: 1, opacity: 1 }}
+      exit={{ scale: 0.9, opacity: 0 }}
+      className="relative bg-black rounded-2xl shadow-2xl overflow-hidden w-full max-w-3xl"
+    >
+      <img
+        src={popupImages[currentImage]}
+        alt={`Season ${currentImage + 1}`}
+        className="w-full max-h-[90vh] object-cover sm:object-contain cursor-pointer"
+        onClick={() => {
+          setShowPopup(false);
+        }}
+      />
+
+      {/* Navigation */}
+      {popupImages.length > 1 && (
+        <>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              setCurrentImage((prev) =>
+                prev === 0 ? popupImages.length - 1 : prev - 1
+              );
+            }}
+            className="absolute left-3 top-1/2 -translate-y-1/2 bg-white/70 hover:bg-white text-purple-700 p-2 rounded-full shadow"
           >
-            <img
-              src={popupImages[currentImage]}
-              alt={`Promo ${currentImage + 1}`}
-              className="w-full max-h-[90vh] object-cover sm:object-contain"
-            />
+            ❮
+          </button>
 
-            {/* Navigation */}
-            {popupImages.length > 1 && (
-              <>
-                <button
-                  onClick={() =>
-                    setCurrentImage((prev) =>
-                      prev === 0 ? popupImages.length - 1 : prev - 1
-                    )
-                  }
-                  className="absolute left-3 top-1/2 -translate-y-1/2 bg-white/70 hover:bg-white text-purple-700 p-2 rounded-full shadow"
-                >
-                  ❮
-                </button>
-
-                <button
-                  onClick={() =>
-                    setCurrentImage((prev) =>
-                      prev === popupImages.length - 1 ? 0 : prev + 1
-                    )
-                  }
-                  className="absolute right-3 top-1/2 -translate-y-1/2 bg-white/70 hover:bg-white text-purple-700 p-2 rounded-full shadow"
-                >
-                  ❯
-                </button>
-              </>
-            )}
-
-            {/* Close Button */}
-            <button
-              onClick={() => setShowPopup(false)}
-              className="absolute top-3 right-3 bg-white/80 hover:bg-white text-purple-700 font-bold rounded-full w-8 h-8 flex items-center justify-center shadow"
-            >
-              ✕
-            </button>
-          </motion.div>
-        </div>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              setCurrentImage((prev) =>
+                prev === popupImages.length - 1 ? 0 : prev + 1
+              );
+            }}
+            className="absolute right-3 top-1/2 -translate-y-1/2 bg-white/70 hover:bg-white text-purple-700 p-2 rounded-full shadow"
+          >
+            ❯
+          </button>
+        </>
       )}
+
+      {/* Close */}
+      <button
+        onClick={() => setShowPopup(false)}
+        className="absolute top-3 right-3 bg-white/80 hover:bg-white text-purple-700 font-bold rounded-full w-8 h-8 flex items-center justify-center shadow"
+      >
+        ✕
+      </button>
+    </motion.div>
+  </div>
+)}
+
 
       {/* Featured blogs */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">

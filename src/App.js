@@ -26,6 +26,7 @@ import ScrollToTop from './ScrollToTop';
 import Navbar from './components/Navbar';
 import AdminSidebar from './components/AdminSidebar';
 import UserSidebar from './components/UserSidebar';
+import SeasonsPage from './pages/Seasons';
 
 class App extends Component {
   static contextType = AuthContext;
@@ -74,6 +75,7 @@ const MainApp = () => {
             <Route path="/896552147/login" element={<LoginRoute />} />
             <Route path="/deals" element={<DealsPage />} />
             <Route path="/aboutus" element={<AboutUs />} />
+            <Route path="/seasons" element={<SeasonsPage />} />
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/cookie-policy" element={<CookiePolicy />} />
             <Route path="/imprint" element={<Imprint />} />
