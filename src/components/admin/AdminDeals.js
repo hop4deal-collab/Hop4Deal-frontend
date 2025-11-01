@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { dealsAPI, brandsAPI } from '../../services/api';
+import { dealsAPI, brandsAPI, seasonsAPI } from '../../services/api';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -15,6 +15,7 @@ class AdminDeals extends Component {
       editingDeal: null,
       formData: {
         brand: '',
+        season : '',
         startDate: '',
         endDate: '',
         code: '',
@@ -31,15 +32,17 @@ class AdminDeals extends Component {
 
   loadData = async () => {
     try {
-      const [dealsRes, brandsRes] = await Promise.all([
+      const [dealsRes, brandsRes, seasonRes] = await Promise.all([
         dealsAPI.getAll(),
         brandsAPI.getAll(),
+        seasonsAPI.getAll(),
       ]);
-      
+
       this.setState({
         deals: dealsRes.data,
         brands: brandsRes.data,
         loading: false,
+        seasons: seasonRes.data,
       });
     } catch (error) {
       console.error('Error loading data:', error);
@@ -63,13 +66,13 @@ class AdminDeals extends Component {
 
   handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     try {
       const submitData = {
         ...this.state.formData,
         percentOff: parseInt(this.state.formData.percentOff),
       };
-      
+
       if (this.state.editingDeal) {
         await dealsAPI.update(this.state.editingDeal._id, submitData);
         toast.success('✅ Deal updated successfully!');
@@ -77,15 +80,16 @@ class AdminDeals extends Component {
         await dealsAPI.create(submitData);
         toast.success('✅ Deal created successfully!');
       }
-      
+
       this.setState({
         showModal: false,
         editingDeal: null,
         formData: {
           brand: '',
+           season : '',
           startDate: '',
           type: 'deal',
-          link : '',
+          link: '',
           endDate: '',
           code: '',
           description: '',
@@ -93,7 +97,7 @@ class AdminDeals extends Component {
           isHot: false,
         },
       });
-      
+
       this.loadData();
     } catch (error) {
       console.error('Error saving deal:', error);
@@ -106,7 +110,8 @@ class AdminDeals extends Component {
       editingDeal: deal,
       formData: {
         brand: deal.brand?._id,
-        type:deal.type,
+        season : deal.season,
+        type: deal.type,
         link: deal.link,
         startDate: new Date(deal.startDate)?.toISOString()?.split('T')[0],
         endDate: new Date(deal.endDate)?.toISOString()?.split('T')[0],
@@ -138,6 +143,7 @@ class AdminDeals extends Component {
       editingDeal: null,
       formData: {
         brand: '',
+        season : '',
         startDate: '',
         endDate: '',
         code: '',
@@ -156,7 +162,7 @@ class AdminDeals extends Component {
   };
 
   render() {
-    const { deals, brands, loading, error, showModal, formData, editingDeal } = this.state;
+    const { deals, brands, loading, error, showModal, formData, editingDeal,seasons } = this.state;
 
     if (loading) {
       return (
@@ -236,13 +242,13 @@ class AdminDeals extends Component {
                   </button>
                 </div>
               </div>
-              
+
               <div className="mb-4">
                 <div className="flex items-center justify-between mb-2">
-                  { deal.type !== 'offer' && <span className="bg-red-100 text-red-800 text-sm font-medium px-2.5 py-0.5 rounded">
+                  {deal.type !== 'offer' && <span className="bg-red-100 text-red-800 text-sm font-medium px-2.5 py-0.5 rounded">
                     {deal.percentOff}% OFF
                   </span>}
-                  { deal.type === 'offer' && <span className="bg-yellow-100 text-red-800 text-sm font-medium px-2.5 py-0.5 rounded">
+                  {deal.type === 'offer' && <span className="bg-yellow-100 text-red-800 text-sm font-medium px-2.5 py-0.5 rounded">
                     OFFER
                   </span>}
                   {deal.isHot && deal.type !== 'offer' && (
@@ -252,13 +258,13 @@ class AdminDeals extends Component {
                   )}
                 </div>
                 <p className="text-gray-600 text-sm mb-2">{deal.description}</p>
-                { deal.type !== 'offer' && <div className="bg-gray-100 p-2 rounded">
+                {deal.type !== 'offer' && <div className="bg-gray-100 p-2 rounded">
                   <p className="text-xs text-gray-600 mb-1">Code:</p>
                   <p className="font-mono text-sm font-bold text-primary-600">{deal.code}</p>
                 </div>}
               </div>
-              
-              { deal.type !== 'offer' &&<div className="text-xs text-gray-500">
+
+              {deal.type !== 'offer' && <div className="text-xs text-gray-500">
                 <p>Start: {new Date(deal.startDate).toLocaleDateString()}</p>
                 <p>End: {new Date(deal.endDate).toLocaleDateString()}</p>
               </div>}
@@ -272,6 +278,7 @@ class AdminDeals extends Component {
         {/* Modal */}
         {showModal && (
           <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+            {console.log('Rendering Modal with formData:', formData)}
             <div className="relative top-10 mx-auto p-5 border w-full max-w-md shadow-lg rounded-md bg-white">
               <div className="mt-3">
                 <h3 className="text-lg font-medium text-gray-900 mb-4">
@@ -297,122 +304,143 @@ class AdminDeals extends Component {
                       ))}
                     </select>
                   </div>
-                  <div>
-    <label className="block text-sm font-medium text-gray-700">Redirect Link</label>
-    <input
-      type="url"
-      name="link"
-      value={formData.link}
-      onChange={this.handleInputChange}
-      placeholder="https://example.com"
-      required
-      className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-primary-500 focus:border-primary-500"
-    />
-  </div>
-
-                   <div>
-    <label className="block text-sm font-medium text-gray-700">Type</label>
-    <div className="flex space-x-4 mt-1">
-      <label className="flex items-center space-x-2">
-        <input
-          type="radio"
-          name="type"
-          value="deal"
-          checked={formData.type === "deal" || !formData.type}
-          onChange={this.handleInputChange}
-          className="text-primary-500 focus:ring-primary-500"
-        />
-        <span>Deal</span>
-      </label>
-      <label className="flex items-center space-x-2">
-        <input
-          type="radio"
-          name="type"
-          value="offer"
-          checked={formData.type === "offer"}
-          onChange={this.handleInputChange}
-          className="text-primary-500 focus:ring-primary-500"
-        />
-        <span>Offer</span>
-      </label>
-    </div>
-  </div>
-{formData.type !== "offer" && <>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700">
-                        Start Date
-                      </label>
-                      <input
-                        type="date"
-                        name="startDate"
-                        value={formData.startDate}
-                        onChange={this.handleInputChange}
-                        required
-                        className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-primary-500 focus:border-primary-500"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700">
-                        End Date
-                      </label>
-                      <input
-                        type="date"
-                        name="endDate"
-                        value={formData.endDate}
-                        onChange={this.handleInputChange}
-                        required
-                        className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-primary-500 focus:border-primary-500"
-                      />
-                    </div>
-                  </div>
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700">
-                      Deal Code
+                      Season/Event
                     </label>
-                    <input
-                      type="text"
-                      name="code"
-                      value={formData.code}
+                    <select
+                      name="season"
+                      value={formData.season}
                       onChange={this.handleInputChange}
+                      required
+                      className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                    >
+                      <option value="">Select a Season</option>
+                      {seasons.map((season) => (
+                        <option key={season._id} value={season._id}>
+                          {season.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">Redirect Link</label>
+                    <input
+                      type="url"
+                      name="link"
+                      value={formData.link}
+                      onChange={this.handleInputChange}
+                      placeholder="https://example.com"
                       required
                       className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-primary-500 focus:border-primary-500"
                     />
                   </div>
 
-                 
-
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">
-                      Percentage Off
-                    </label>
-                    <input
-                      type="number"
-                      name="percentOff"
-                      value={formData.percentOff}
-                      onChange={this.handleInputChange}
-                      required
-                      min="0"
-                      max="100"
-                      className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-primary-500 focus:border-primary-500"
-                    />
+                    <label className="block text-sm font-medium text-gray-700">Type</label>
+                    <div className="flex space-x-4 mt-1">
+                      <label className="flex items-center space-x-2">
+                        <input
+                          type="radio"
+                          name="type"
+                          value="deal"
+                          checked={formData.type === "deal" || !formData.type}
+                          onChange={this.handleInputChange}
+                          className="text-primary-500 focus:ring-primary-500"
+                        />
+                        <span>Deal</span>
+                      </label>
+                      <label className="flex items-center space-x-2">
+                        <input
+                          type="radio"
+                          name="type"
+                          value="offer"
+                          checked={formData.type === "offer"}
+                          onChange={this.handleInputChange}
+                          className="text-primary-500 focus:ring-primary-500"
+                        />
+                        <span>Offer</span>
+                      </label>
+                    </div>
                   </div>
+                  {formData.type !== "offer" && <>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700">
+                          Start Date
+                        </label>
+                        <input
+                          type="date"
+                          name="startDate"
+                          value={formData.startDate}
+                          onChange={this.handleInputChange}
+                          required
+                          className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700">
+                          End Date
+                        </label>
+                        <input
+                          type="date"
+                          name="endDate"
+                          value={formData.endDate}
+                          onChange={this.handleInputChange}
+                          required
+                          className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                        />
+                      </div>
+                    </div>
 
-                  <div className="flex items-center">
-                    <input
-                      type="checkbox"
-                      name="isHot"
-                      checked={formData.isHot}
-                      onChange={this.handleInputChange}
-                      className="rounded border-gray-300 text-primary-600 focus:ring-primary-500"
-                    />
-                    <label className="ml-2 text-sm text-gray-700">
-                      Mark as Hot Deal
-                    </label>
-                  </div>
-</>}
-                   <div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700">
+                        Deal Code
+                      </label>
+                      <input
+                        type="text"
+                        name="code"
+                        value={formData.code}
+                        onChange={this.handleInputChange}
+                        required
+                        className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                      />
+                    </div>
+
+
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700">
+                        Percentage Off
+                      </label>
+                      <input
+                        type="number"
+                        name="percentOff"
+                        value={formData.percentOff}
+                        onChange={this.handleInputChange}
+                        required
+                        min="0"
+                        max="100"
+                        className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                      />
+                    </div>
+
+                    <div className="flex items-center">
+                      <input
+                        type="checkbox"
+                        name="isHot"
+                        checked={formData.isHot}
+                        onChange={this.handleInputChange}
+                        className="rounded border-gray-300 text-primary-600 focus:ring-primary-500"
+                      />
+                      <label className="ml-2 text-sm text-gray-700">
+                        Mark as Hot Deal
+                      </label>
+                    </div>
+                  </>}
+                  <div>
                     <label className="block text-sm font-medium text-gray-700">
                       Description
                     </label>

@@ -21,6 +21,7 @@ class AdminSidebar extends Component {
             <SidebarLink to="/admin/brands" icon="🏢" label="Brands" location={location} />
             <SidebarLink to="/admin/deals" icon="💰" label="Deals" location={location} />
             <SidebarLink to="/admin/blogs" icon="📝" label="Blogs" location={location} />
+            <SidebarLink to="/admin/seasons" icon="🎉" label="Seasons" location={location} />
           </nav>
 
           {/* Footer */}

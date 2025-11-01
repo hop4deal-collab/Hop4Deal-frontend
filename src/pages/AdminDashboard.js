@@ -7,6 +7,7 @@ import AdminBrands from '../components/admin/AdminBrands';
 import AdminDeals from '../components/admin/AdminDeals';
 import AdminBlogs from '../components/admin/AdminBlogs';
 import AdminOverview from '../components/admin/AdminOverview';
+import AdminSeasons from '../components/admin/Season';
 
 // Wrapper component to use useLocation hook
 const AdminDashboardWrapper = () => {
@@ -31,6 +32,7 @@ class AdminDashboard extends Component {
                   <Route path="/brands" element={<AdminBrands />} />
                   <Route path="/deals" element={<AdminDeals />} />
                   <Route path="/blogs" element={<AdminBlogs />} />
+                   <Route path="/seasons" element={<AdminSeasons />} />
                 </Routes>
               </div>
             </div>
